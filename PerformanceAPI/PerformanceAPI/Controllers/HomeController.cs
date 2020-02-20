@@ -17,13 +17,23 @@ namespace PerformanceAPI.Controllers
         {
             _logger = logger;
         }
-
+        
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult PerformanceReport()
+        {
+            return View();
+        }
+
+        public IActionResult SalaryInformation()
         {
             return View();
         }
