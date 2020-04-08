@@ -13,7 +13,7 @@ for (i = 0; i < toggler.length; i++) {
     });
 }
 
-function showThread(threadId, element) {
+function showDiv(threadId, element) {
     document.getElementById(threadId).style.display = element ? 'block' : 'none';
 }
 
