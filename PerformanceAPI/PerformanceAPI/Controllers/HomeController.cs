@@ -38,6 +38,11 @@ namespace PerformanceAPI.Controllers
             return View();
         }
 
+        public IActionResult Employee()
+        {
+            return View();
+        }
+
         public IActionResult PredictionSummary()
         {
             return View();

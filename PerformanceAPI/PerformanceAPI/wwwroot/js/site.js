@@ -11,4 +11,14 @@ for (i = 0; i < toggler.length; i++) {
         this.parentElement.querySelector(".nested").classList.toggle("active");
         this.classList.toggle("caret-down");
     });
+
 }
+
+function showDiv(threadId, element) {
+    document.getElementById(threadId).style.display = element ? 'block' : 'none';
+}
+
+/* function listEmployees() {
+    return 
+} */
+
