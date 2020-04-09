@@ -33,6 +33,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Employee">Employee</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="PredictionSummary">Prediction Summary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ActualSummary">Actual Summary</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -53,7 +59,8 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/Chart.js/Chart.bundle.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/LearnJavaScript.js" asp-append-version="true"></script>
+    <script src="~/js/ActualsReport.js" asp-append-version="true"></script>
+    <script src="~/js/PredictionsReport.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

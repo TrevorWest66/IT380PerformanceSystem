@@ -77,3 +77,8 @@ ul, #myUL {
 	border: solid 2px black;
 	border-top: solid 1px black;
 }
+
+.pie-chart {
+	width: 600px;
+	height: 600px;
+}
