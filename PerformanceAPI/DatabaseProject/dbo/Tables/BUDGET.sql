@@ -1,0 +1,9 @@
+﻿-----------------------------
+--"BUDGET"
+-----------------------------
+CREATE TABLE "BUDGET" (
+	"BUDGET_ID" NUMERIC(6) PRIMARY KEY,
+	"TEAM_ID" NUMERIC(6) NOT NULL,
+	"BUDGET" NUMERIC(20,2) NOT NULL,
+	"BUDGET_PERIOD" VARCHAR(25) NOT NULL
+	)

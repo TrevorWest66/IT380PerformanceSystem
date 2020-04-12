@@ -1,0 +1,8 @@
+﻿-----------------------------
+--"DEPARTMENT"
+-----------------------------
+CREATE TABLE "DEPARTMENT" (
+	"DEPT_ID" NUMERIC(6) PRIMARY KEY,
+	"DEPT_NAME" VARCHAR(20) NOT NULL,
+	"DEPT_DESCRIPTION" VARCHAR(40) NOT NULL
+	)
