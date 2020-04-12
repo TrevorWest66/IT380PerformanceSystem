@@ -71,6 +71,8 @@
     <Build Include="dbo\Tables\DEPARTMENT.sql" />
     <Build Include="dbo\Tables\BUDGET.sql" />
     <Build Include="dbo\Tables\PROJECTIONS.sql" />
-    <None Include="Scripts\ScriptsIgnoredOnImport.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Scripts\Script1.sql" />
   </ItemGroup>
 </Project>
