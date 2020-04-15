@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.IO;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 
 namespace PerformanceAPI.Models
 {

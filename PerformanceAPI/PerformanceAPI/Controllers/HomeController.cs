@@ -45,12 +45,12 @@ namespace PerformanceAPI.Controllers
             return View();
         }
 
-        public IActionResult PredictionSummary()
+        public IActionResult PredictionSummaryReport()
         {
             return View();
         }
 
-        public IActionResult ActualSummary()
+        public IActionResult ActualsSummaryReport()
         {
             return View();
         }
