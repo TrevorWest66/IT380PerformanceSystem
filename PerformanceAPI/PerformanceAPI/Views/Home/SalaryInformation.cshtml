@@ -1,7 +1,134 @@
-﻿
-@{
-    ViewData["Title"] = "SalaryInformation";
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Index";
 }
 
-<h1 class="display-4">SalaryInformation</h1>
+<style>
+    .divLeftBorder {
+        border-left: 1px solid black;
+    }
+
+    .divBorderNoTop {
+        border: 1px solid black;
+        border-top: none;
+    }
+
+    .bgGrey {
+        background: #DADADA !important;
+    }
+</style>
+
+<div class="row text-center">
+    <div class="col-sm-12">
+        <h2>Salary Management</h2>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <div class="col-md-8 col-sm-12">
+        <div class="row text-center" style="background:#E05A5A; border:1px solid">
+            <div class="col-sm-12">
+                All Employees
+            </div>
+        </div>
+        <div class="row text-center text-black-50 divBorderNoTop bgGrey">
+            <div class="col-sm-3">
+                Employee Id
+            </div>
+            <div class="col-sm-9 divLeftBorder">
+                Name of Employee
+            </div>
+        </div>
+        <div class="row text-center divBorderNoTop bgGrey">
+            <div class="col-sm-3">
+                123456
+            </div>
+            <div class="col-sm-9 divLeftBorder">
+                Asad Farid
+            </div>
+        </div>
+        <div class="row text-center divBorderNoTop bgGrey">
+            <div class="col-sm-3">
+                1
+            </div>
+            <div class="col-sm-9 divLeftBorder">
+                1
+            </div>
+        </div>
+        <div class="row text-center divBorderNoTop bgGrey">
+            <div class="col-sm-3">
+                1
+            </div>
+            <div class="col-sm-9 divLeftBorder">
+                1
+            </div>
+        </div>
+        <div class="row text-center divBorderNoTop bgGrey">
+            <div class="col-sm-3">
+                1
+            </div>
+            <div class="col-sm-9 divLeftBorder">
+                1
+            </div>
+        </div>
+        <div class="row text-center divBorderNoTop bgGrey">
+            <div class="col-sm-3">
+                1
+            </div>
+            <div class="col-sm-9 divLeftBorder">
+                1
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm-12 text-right">
+        <canvas id="pie-chart-1" width="800" height="450"></canvas>
+        <br />
+        <canvas id="pie-chart-2" width="800" height="450"></canvas>
+    </div>
+</div>
+
+<script>
+    Chart.defaults.global.legend = { display: false }
+    new Chart(document.getElementById("pie-chart-1"), {
+        type: 'pie',
+        data: {
+            labels: ["Expense", "Income"],
+            datasets: [{
+                label: "Budget",
+                backgroundColor: ["#E05A5A", "#FFFFFF"],
+                data: [80, 20]
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Annual Budget'
+            }
+        }
+    });
+    new Chart(document.getElementById("pie-chart-2"), {
+        type: 'pie',
+        data: {
+            labels: ["Complete", "Incomplete"],
+            datasets: [{
+                label: "Budget",
+                backgroundColor: ["#E05A5A", "#FFFFFF"],
+                data: [75, 25]
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: 'Progress'
+            }
+        }
+    });
+
+    //when we click name in the grid it redirects to employee details page.
+    $('.divBorderNoTop').on('click', function () {
+        window.location.href = "/Home/Details";
+    });
+</script>
+
 
