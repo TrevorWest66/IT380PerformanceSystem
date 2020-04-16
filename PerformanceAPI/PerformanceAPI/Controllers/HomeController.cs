@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PerformanceAPI.Models;
+using PerformanceAPI.Gateway;
 
 namespace PerformanceAPI.Controllers
 {
     public class HomeController : Controller
     {
-        db database = new db();
+        readonly GateWayClass _db = new GateWayClass();
 
         private readonly ILogger<HomeController> _logger;
 
@@ -47,7 +48,9 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult PredictionSummaryReport()
         {
-            return View();
+            // this gets the list of models and passes them into the view
+            List<PredictionSummaryReportModel> psrModel = _db.GetDataForPredictionSummaryReportModel().ToList();
+            return View(psrModel);
         }
 
         public IActionResult ActualsSummaryReport()
