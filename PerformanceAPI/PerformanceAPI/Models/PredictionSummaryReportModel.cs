@@ -13,10 +13,11 @@ namespace PerformanceAPI.Models
 		public string LastName { get; set; } 
 		public string ProjectedPR { get; set; }
 		public string CurrentPosition { get; set; }
-		public bool ProjectedPosition { get; set; }
-		public string CurrentSalary { get; set; }
-		public string SalaryIncrease { get; set; }
-		public string Supervisor { get; set; }
+		public string ProjectedPosition { get; set; }
+		public double CurrentSalary { get; set; }
+		public double SalaryIncrease { get; set; }
+		public int Supervisor { get; set; }
+		public string DateOfProjection { get; set; }
 
 		//derived attributes
 		public string NewSalary;

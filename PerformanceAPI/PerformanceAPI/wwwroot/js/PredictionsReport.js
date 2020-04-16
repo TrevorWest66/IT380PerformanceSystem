@@ -1,5 +1,5 @@
-﻿var ctx1 = document.getElementById('SummaryBudgetChart').getContext('2d');
-var predictionChart = new Chart(ctx1, {
+﻿var ctx = document.getElementById('SummaryBudgetChart').getContext('2d');
+var SummaryBudgetChart = new Chart(ctx, {
     type: 'pie',
     data: {
         labels: ['Unused', 'Used'],
