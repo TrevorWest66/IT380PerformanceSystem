@@ -1,0 +1,51 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.applet.*;
+public class Login_page extends Frame implements ActionListener
+{ Label l1=new Label("User ID:");
+  Label l2=new Label("Password:");
+  Label l3=new Label(" ");
+  TextField t1=new TextField();
+  TextField t2=new TextField();
+  Button b= new Button("Submit");
+ 
+//  Label l4 = new Label("Forgot User ID/ Password?");
+  //"Forgot User ID/ Password?"
+  
+  public Login_page()
+  { add(l1);
+    add(t1);
+    add(l2);
+    add(t2);
+    add(b);
+    add(l3);
+ //   add(l4);
+    l1.setBounds(700,345,70,20);
+    t1.setBounds(800,345,200,20);
+    l2.setBounds(700,395,70,20);
+    t2.setBounds(800,395,200,20);
+//    l4.setBounds(800,400,200,20);
+    b.setBounds(889,450,70,20);
+    b.addActionListener(this);
+    t2.setEchoChar('*');
+    addWindowListener(new mwa());
+    
+   
+ //   l4.addActionListener(this);
+  }
+  public void actionPerformed(ActionEvent e)
+  { l3.setText("Welcome "+t1.getText());
+    l3.setBounds(800,480,100,100);}
+  public static void main(String s[])
+  { Login_page l=new Login_page();
+    l.setSize(new Dimension(1300,800));
+    l.setTitle("Federated Inshurance");
+    l.setVisible(true);
+  }
+}
+class mwa extends WindowAdapter
+{ public mwa(){}
+  public void windowClosing(WindowEvent e)
+  { System.exit(0);
+  }
+}
