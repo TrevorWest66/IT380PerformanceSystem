@@ -43,7 +43,8 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Employee()
         {
-            return View();
+            List<EmployeeModel> empModel = _db.GetDataForEmployeeNameDropDown().ToList();
+            return View(empModel);
         }
 
         public IActionResult PredictionSummaryReport()

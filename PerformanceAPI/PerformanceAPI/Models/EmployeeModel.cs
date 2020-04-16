@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PerformanceAPI.Gateway;
 
 namespace PerformanceAPI.Models
 {
+    
     public class EmployeeModel
     {
+
+        readonly GateWayClass _db = new GateWayClass();
         public string EmployeeFirstName { get; set; }
         public string EmployeeMiddleIntial { get; set; }
         public string EmployeeLastName { get; set; }
@@ -38,6 +42,13 @@ namespace PerformanceAPI.Models
             string dateOfNextReview = (EmployeeDateOfLastReview.Substring(0, 7)) + (yearOfNextReview.ToString());
             return dateOfNextReview;
         }
+
+        public List<EmployeeModel> employeeLastandFirst()
+        {
+            List<EmployeeModel> employeeModel = _db.GetDataForEmployeeNameDropDown().ToList();
+            return employeeModel;
+        }
+        
 
     }
 

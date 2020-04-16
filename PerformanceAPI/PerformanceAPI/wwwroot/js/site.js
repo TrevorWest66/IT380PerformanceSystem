@@ -6,6 +6,7 @@
 var toggler = document.getElementsByClassName("caret");
 var i;
 
+
 for (i = 0; i < toggler.length; i++) {
     toggler[i].addEventListener("click", function () {
         this.parentElement.querySelector(".nested").classList.toggle("active");
@@ -18,7 +19,5 @@ function showDiv(threadId, element) {
     document.getElementById(threadId).style.display = element ? 'block' : 'none';
 }
 
-/* function listEmployees() {
-    return 
-} */
+
 
