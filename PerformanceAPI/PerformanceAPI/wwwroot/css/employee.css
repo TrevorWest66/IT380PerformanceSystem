@@ -45,3 +45,12 @@ table.minimalistBlack {
 		table.minimalistBlack tfoot td {
 			font-size: 14px;
 		}
+
+#drop-down {
+	display: none;
+}
+
+#drop-down.active {
+	display: block;
+}
+
