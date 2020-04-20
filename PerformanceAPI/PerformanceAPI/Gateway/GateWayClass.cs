@@ -38,20 +38,23 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					PredictionSummaryReportModel psrModel = new PredictionSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					psrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
-					psrModel.FirstName = dr["E_FIRST_NAME"].ToString();
-					psrModel.MiddleName = dr["E_MIDDLE_INTIAL"].ToString();
-					psrModel.LastName = dr["E_LAST_NAME"].ToString();
-					psrModel.ProjectedPR = dr["PR_PROJECTION"].ToString();
-					psrModel.CurrentPosition = dr["POSITION_NAME"].ToString();
-					psrModel.ProjectedPosition = dr["PROJECTED_POSITION"].ToString();
-					psrModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
-					psrModel.SalaryIncrease = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
-					psrModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
-					psrModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
+					if (CurrentUserModel.acceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					{
+						psrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						psrModel.FirstName = dr["E_FIRST_NAME"].ToString();
+						psrModel.MiddleName = dr["E_MIDDLE_INTIAL"].ToString();
+						psrModel.LastName = dr["E_LAST_NAME"].ToString();
+						psrModel.ProjectedPR = dr["PR_PROJECTION"].ToString();
+						psrModel.CurrentPosition = dr["POSITION_NAME"].ToString();
+						psrModel.ProjectedPosition = dr["PROJECTED_POSITION"].ToString();
+						psrModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+						psrModel.SalaryIncrease = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+						psrModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+						psrModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString()[0..^11];
 
-					//adds the model with the records data in it to the list
-					predictionSummaryReportModelList.Add(psrModel);
+						//adds the model with the records data in it to the list
+						predictionSummaryReportModelList.Add(psrModel);
+					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();

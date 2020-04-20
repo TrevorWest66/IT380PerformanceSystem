@@ -82,3 +82,11 @@ ul, #myUL {
 	width: 600px;
 	height: 600px;
 }
+
+.predictions-report-charts{
+	align-items: center;
+}
+
+.hidden-data{
+	display: none;
+}

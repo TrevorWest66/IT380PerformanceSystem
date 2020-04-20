@@ -4,11 +4,46 @@
     ViewData["Title"] = "PredictionSummary";
 }
 
-<h1>Prediction Summary</h1>
+<h1>Projections Summary</h1>
 
-<div>
-    <h3>Projection Summaries</h3>
-</div>
+@{
+    double usedBudget = 0;
+    int employeesWithProjections = 0;
+    foreach (var item in Model)
+    {
+        usedBudget += (item.CurrentSalary * (item.SalaryIncrease + 1));
+        employeesWithProjections++;
+    }
+    CurrentUserModel.CurrentBudgetUsed = Convert.ToInt32(usedBudget);
+    CurrentUserModel.NumberOfEmployeesWithProjections = employeesWithProjections;
+
+    @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
+    {
+        CurrentUserModel.overBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
+    }
+}
+
+<p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
+<p class="hidden-data" id="used-budget">@CurrentUserModel.CurrentBudgetUsed</p>
+<p class="hidden-data" id="employees-done">@CurrentUserModel.NumberOfEmployeesWithProjections</p>
+<p class="hidden-data" id="employees-total">@CurrentUserModel.NumberOfEmployees</p>
+
+<table id="predictions-report-charts">
+    <tr>
+        <td>
+            @if (CurrentUserModel.overBudgetAmount < 0)
+            {
+                <h3>You are overbudget by:</h3>
+                <h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
+			}
+			else 
+            { 
+                <div id="budget-chart"></div>
+            }
+        </td>
+        <td><div id="projections-chart"></div></td>
+    </tr>
+</table>
 
 <div>
     <table class="table table-striped table-bordered">
@@ -91,3 +126,6 @@
         </tbody>
     </table>
 </div>
+
+<script src="~/js/BudgetPirChart.js"></script>
+<script src="~/js/ProjectionsDoneChart.js"></script>
