@@ -1,0 +1,51 @@
+﻿table.employeeDetails {
+	font-family: Verdana, Geneva, sans-serif;
+	background-color: #DADADA;
+	width: 100%;
+	text-align: left;
+	border-collapse: collapse;
+}
+
+	table.employeeDetails td, table.employeeDetails th {
+		border: 1px solid #000000;
+		padding: 4px 10px;
+	}
+
+	table.employeeDetails tbody td {
+		font-size: 13px;
+		color: #000000;
+	}
+
+	table.employeeDetails tr:nth-child(even) {
+		background: #F1F1F1;
+	}
+
+	table.employeeDetails thead {
+		background: #D80707;
+		background: -moz-linear-gradient(top, #e24545 0%, #dc1f1f 66%, #D80707 100%);
+		background: -webkit-linear-gradient(top, #e24545 0%, #dc1f1f 66%, #D80707 100%);
+		background: linear-gradient(to bottom, #e24545 0%, #dc1f1f 66%, #D80707 100%);
+		border-bottom: 2px solid #444444;
+	}
+
+		table.employeeDetails thead th {
+			font-size: 19px;
+			font-weight: bold;
+			color: #FFFFFF;
+		}
+
+	table.employeeDetails tfoot td {
+		font-size: 14px;
+	}
+
+	table.employeeDetails tfoot .links {
+		text-align: right;
+	}
+
+		table.employeeDetails tfoot .links a {
+			display: inline-block;
+			background: #1C6EA4;
+			color: #FFFFFF;
+			padding: 2px 8px;
+			border-radius: 5px;
+		}

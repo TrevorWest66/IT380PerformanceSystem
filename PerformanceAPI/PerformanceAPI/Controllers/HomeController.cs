@@ -69,6 +69,20 @@ namespace PerformanceAPI.Controllers
             return View();
         }
 
+        public ActionResult EmployeeDetails(int id)
+        {
+            Console.WriteLine(id.ToString());
+            if (id == 0)
+            {
+                return NotFound();
+            }
+            List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
+
+            Console.WriteLine("In for loop of actionresult");
+            ViewBag.PartialStyle = "display: none";
+            return View("_EmployeePartial", empDetails);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

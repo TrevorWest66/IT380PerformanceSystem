@@ -71,7 +71,7 @@ namespace PerformanceAPI.Gateway
 				//makes the command for the stored procedure
 				//and sets its type
 				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
-				SqlCommand cmd = new SqlCommand("GetEmployeeLastAndFirst", con)
+				SqlCommand cmd = new SqlCommand("GetEmpIDFirstLast", con)
 				{
 					CommandType = CommandType.StoredProcedure
 				};
@@ -83,19 +83,70 @@ namespace PerformanceAPI.Gateway
 				while (dr.Read())
 				{
 					//instantiates a new model
-					EmployeeModel employeeDetailModel = new EmployeeModel();
+					EmployeeModel employeeModel = new EmployeeModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					employeeDetailModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
-					employeeDetailModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+					employeeModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+					employeeModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+					employeeModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 
 					//adds the model with the records data in it to the list
-					employeeModelList.Add(employeeDetailModel);
+					employeeModelList.Add(employeeModel);
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
 			}
 			//returns the list of models
 			return employeeModelList;
+			;
+		}
+
+		public IEnumerable<EmployeeDetailsModel> DisplayAnEmployeesData(int id)
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<EmployeeDetailsModel> employeeDetailsModelList = new List<EmployeeDetailsModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("getEmployeesDetails", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				cmd.Parameters.AddWithValue("@employeeID", id);
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					EmployeeDetailsModel employeeDetailModel = new EmployeeDetailsModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					employeeDetailModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+					employeeDetailModel.FirstName = dr["E_FIRST_NAME"].ToString();
+					employeeDetailModel.MiddleName = dr["E_MIDDLE_INTIAL"].ToString();
+					employeeDetailModel.LastName = dr["E_LAST_NAME"].ToString();
+					employeeDetailModel.Posistion = dr["POSITION_NAME"].ToString();
+					employeeDetailModel.Team = dr["TEAM_NAME"].ToString();
+					employeeDetailModel.Department = dr["DEPT_NAME"].ToString();
+					employeeDetailModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+					employeeDetailModel.SalaryFlag = Convert.ToBoolean(dr["SALARY_FLAG"].ToString());
+					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Substring(0, 9);
+					employeeDetailModel.SupervisorFirstName = dr["SUPERVISOR_FIRST_NAME"].ToString();
+					employeeDetailModel.SupervisorLastName = dr["SUPERVISOR_LAST_NAME"].ToString();
+
+					//adds the model with the records data in it to the list
+					employeeDetailsModelList.Add(employeeDetailModel);
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return employeeDetailsModelList;
 			;
 		}
 

@@ -17,7 +17,9 @@ for (i = 0; i < toggler.length; i++) {
 
 function showDiv(threadId, element) {
     document.getElementById(threadId).style.display = element ? 'block' : 'none';
+    console.log("show div");
 }
+
 
 
 

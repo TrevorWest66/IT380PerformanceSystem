@@ -15,7 +15,7 @@ namespace PerformanceAPI.Models
         public string EmployeeMiddleIntial { get; set; }
         public string EmployeeLastName { get; set; }
         public string EmployeeGender { get; set; }
-        public string EmployeeID { get; set; }
+        public int EmployeeID { get; set; }
         public string EmployeeDateOfLastReview { get; set; }
         public string EmployeeActualPreformanceReview { get; set; }
         public string EmployeeCurrentSalary { get; set; }
