@@ -47,16 +47,37 @@ namespace PerformanceAPI.Controllers
             return View(empModel);
         }
 
-        public IActionResult PredictionSummaryReport()
+        public IActionResult PredictionSummaryReport(int Year)
         {
+            //delete later
+            Year = 2020;
+            if(Year == 0)
+            {
+                return NotFound();
+            }
             // this gets the list of models and passes them into the view
-            List<PredictionSummaryReportModel> psrModel = _db.GetDataForPredictionSummaryReportModel().ToList();
+            List<PredictionSummaryReportModel> psrModel = _db.GetDataForPredictionSummaryReportModel(Year).ToList();
+            if(psrModel == null)
+            {
+                return NotFound();
+            }
             return View(psrModel);
         }
 
-        public IActionResult ActualsSummaryReport()
+        public IActionResult ActualsSummaryReport(int Year)
         {
-            return View();
+            // delete this later
+            Year = 2020;
+            if (Year == 0)
+            {
+                return NotFound();
+            }
+            List<ActualsSummaryReportModel> asrModel = _db.GetDataForActualsSummaryReportModel(Year).ToList();
+            if (asrModel == null)
+            {
+                return NotFound();
+            }
+            return View(asrModel);
         }
 
         public IActionResult Projections()
