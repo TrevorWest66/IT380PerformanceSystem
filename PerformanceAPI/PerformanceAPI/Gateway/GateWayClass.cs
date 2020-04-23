@@ -122,11 +122,12 @@ namespace PerformanceAPI.Gateway
 				//makes the command for the stored procedure
 				//and sets its type
 				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
-				SqlCommand cmd = new SqlCommand("getEmployeesDetails", con)
+				SqlCommand cmd = new SqlCommand("getDataForEmployeeDetailsTable", con)
 				{
 					CommandType = CommandType.StoredProcedure
 				};
-				cmd.Parameters.AddWithValue("@employeeID", id);
+				cmd.Parameters.AddWithValue("@EmployeeID", id);
+				cmd.Parameters.AddWithValue("@CurrentYear", DateTime.Now.ToString("yyyy"));
 				//opens the connection
 				con.Open();
 				//executes the stored procedure
@@ -146,9 +147,14 @@ namespace PerformanceAPI.Gateway
 					employeeDetailModel.Department = dr["DEPT_NAME"].ToString();
 					employeeDetailModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
 					employeeDetailModel.SalaryFlag = salaryFlagToString(Convert.ToBoolean(dr["SALARY_FLAG"]));
-					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Substring(0, 9);
+					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Split(" ")[0];
 					employeeDetailModel.SupervisorFirstName = dr["SUPERVISOR_FIRST_NAME"].ToString();
 					employeeDetailModel.SupervisorLastName = dr["SUPERVISOR_LAST_NAME"].ToString();
+					employeeDetailModel.LastReviewDate = nullReviewDate(dr["LAST_REVIEW_DATE"].ToString());
+					employeeDetailModel.ProjectedPosition = nullProjection(dr["PROJECTED_POSITION"].ToString());
+					employeeDetailModel.DateOfProjection = nullProjectionDate(dr["DATE_OF_PROJECTION"].ToString());
+					employeeDetailModel.ProjectedSalaryIncrease = decimalToPrecentString(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					employeeDetailModel.ProjectedRating = nullProjection(dr["PR_PROJECTION"].ToString());
 
 					//adds the model with the records data in it to the list
 					employeeDetailsModelList.Add(employeeDetailModel);
@@ -161,6 +167,21 @@ namespace PerformanceAPI.Gateway
 			;
 		}
 
+		private string nullReviewDate (string review)
+		{
+			if (review.Equals("") || review.Equals(null))
+			{
+				return "This employee has not been reviewed.";
+			}
+			else
+			{
+				return review.Split(" ")[0];
+			}
+		}
+
+		/**
+		 * Returns "Salary" or "Hourly" depending on the pay type
+		 */
 		private string salaryFlagToString(Boolean boo)
 		{
 			if (boo)
@@ -169,6 +190,45 @@ namespace PerformanceAPI.Gateway
 			} else
 			{
 				return "Hourly";
+			}
+		}
+
+		/**
+		 * Returns "-----" if the projection is null or ""
+		 */
+		private string nullProjection(string projection)
+		{
+			if (projection.Equals("") || projection.Equals(null)) {
+				return "-----";
+			}
+			else
+			{
+				return projection;
+			}
+		}
+
+		private string decimalToPrecentString(string increase)
+		{
+			if (increase.Equals("") || increase.Equals(null))
+			{
+				return "-----";
+			}
+			double increaseint = Convert.ToDouble(increase);
+			return ((increaseint * 100).ToString() + "%");
+		}
+
+		/**
+		 * Returns "A projection has not been made." if the projection is null or ""
+		 */
+		private string nullProjectionDate(string projection)
+		{
+			if (projection.Equals("") || projection.Equals(null))
+			{
+				return "A projection has not been made.";
+			}
+			else
+			{
+				return projection.Split(" ")[0];
 			}
 		}
 

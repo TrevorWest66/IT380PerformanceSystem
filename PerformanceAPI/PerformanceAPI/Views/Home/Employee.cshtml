@@ -49,6 +49,26 @@
                 <td>Team - Department</td>
                 <td>@Html.DisplayFor(modelItem => item.Team) - @Html.DisplayFor(modelItem => item.Department)</td>
             </tr>
+            <tr>
+                <td>Date of Last Review</td>
+                <td>@Html.DisplayFor(modelItem => item.LastReviewDate)</td>
+            </tr>
+            <tr>
+                <td>Projection Made On</td>
+                <td>@Html.DisplayFor(modelItem => item.DateOfProjection)</td>
+            </tr>
+            <tr>
+                <td>Projected Rating</td>
+                <td>@Html.DisplayFor(modelItem => item.ProjectedRating)</td>
+            </tr>
+            <tr>
+                <td>Projected Position</td>
+                <td>@Html.DisplayFor(modelItem => item.ProjectedPosition)</td>
+            </tr>
+            <tr>
+                <td>Projected Salary Increase</td>
+                <td>@Html.DisplayFor(modelItem => item.ProjectedSalaryIncrease)</td>
+            </tr>
         </tbody>
     }
 

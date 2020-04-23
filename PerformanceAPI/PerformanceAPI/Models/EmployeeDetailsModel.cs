@@ -19,5 +19,11 @@ namespace PerformanceAPI.Models
 		public string HireDate { get; set; }
 		public string SupervisorFirstName { get; set; }
 		public string SupervisorLastName { get; set; }
+		public string LastReviewDate { get; set; }
+		public string ProjectedPosition { get; set; }
+		public string DateOfProjection { get; set; }
+		public string ProjectedSalaryIncrease { get; set; }
+		public string ProjectedRating { get; set; }
+
 	}
 }
