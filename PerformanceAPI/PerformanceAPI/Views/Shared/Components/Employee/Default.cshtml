@@ -15,7 +15,7 @@
                 @foreach (var item in Model)
                 {
                     <li>
-                        @Html.ActionLink(item.EmployeeLastName, "EmployeeDetails", new { id = item.EmployeeID })
+                        @Html.ActionLink(item.EmployeeLastName + ", " + item.EmployeeFirstName, "EmployeeDetails", new { id = item.EmployeeID })
                     </li>
                 }
             </ul>
