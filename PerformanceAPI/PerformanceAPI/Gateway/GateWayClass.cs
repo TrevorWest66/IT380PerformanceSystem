@@ -145,7 +145,7 @@ namespace PerformanceAPI.Gateway
 					employeeDetailModel.Team = dr["TEAM_NAME"].ToString();
 					employeeDetailModel.Department = dr["DEPT_NAME"].ToString();
 					employeeDetailModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
-					employeeDetailModel.SalaryFlag = Convert.ToBoolean(dr["SALARY_FLAG"].ToString());
+					employeeDetailModel.SalaryFlag = salaryFlagToString(Convert.ToBoolean(dr["SALARY_FLAG"]));
 					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Substring(0, 9);
 					employeeDetailModel.SupervisorFirstName = dr["SUPERVISOR_FIRST_NAME"].ToString();
 					employeeDetailModel.SupervisorLastName = dr["SUPERVISOR_LAST_NAME"].ToString();
@@ -159,6 +159,17 @@ namespace PerformanceAPI.Gateway
 			//returns the list of models
 			return employeeDetailsModelList;
 			;
+		}
+
+		private string salaryFlagToString(Boolean boo)
+		{
+			if (boo)
+			{
+				return "Salary";
+			} else
+			{
+				return "Hourly";
+			}
 		}
 
 		//This will call the stored procedure for ActualsSummaryReport model

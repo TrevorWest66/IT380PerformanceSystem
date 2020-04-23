@@ -95,6 +95,10 @@ ul, #myUL {
 	color : white;
 }
 
+img {
+	width: 155px;
+}
+
 .maroon-link a{
 	color: maroon;
 }
