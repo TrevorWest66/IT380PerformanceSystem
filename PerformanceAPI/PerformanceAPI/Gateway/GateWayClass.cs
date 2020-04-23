@@ -89,15 +89,19 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					//instantiates a new model
-					EmployeeModel employeeModel = new EmployeeModel();
-					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					employeeModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
-					employeeModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
-					employeeModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
+						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					{
+						//instantiates a new model
+						EmployeeModel employeeModel = new EmployeeModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						employeeModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+						employeeModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+						employeeModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 
-					//adds the model with the records data in it to the list
-					employeeModelList.Add(employeeModel);
+						//adds the model with the records data in it to the list
+						employeeModelList.Add(employeeModel);
+					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
