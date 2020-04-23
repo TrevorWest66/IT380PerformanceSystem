@@ -94,3 +94,7 @@ ul, #myUL {
 #report-button a{
 	color : white;
 }
+
+.maroon-link a{
+	color: maroon;
+}

@@ -22,7 +22,7 @@
             @foreach (var item in Model)
 			{
                 <tr>
-                    <td>
+                    <td class="maroon-link">
                         @Html.ActionLink(item.BudgetYear + " Report", "ActualsSummaryReport", new {Year=item.BudgetYear })
                     </td>
                     <td>
@@ -51,7 +51,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                    <td class="maroon-link">
                         @Html.ActionLink(item.BudgetYear + " Report", "PredictionSummaryReport", new { Year = item.BudgetYear })
                     </td>
                     <td>
