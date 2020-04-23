@@ -15,7 +15,7 @@ namespace PerformanceAPI.Models
 		public string Team { get; set; }
 		public string Department { get; set; }
 		public double CurrentSalary { get; set; }
-		public Boolean SalaryFlag { get; set; }
+		public string SalaryFlag { get; set; }
 		public string HireDate { get; set; }
 		public string SupervisorFirstName { get; set; }
 		public string SupervisorLastName { get; set; }
