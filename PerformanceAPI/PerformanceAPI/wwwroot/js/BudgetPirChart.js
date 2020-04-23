@@ -14,7 +14,7 @@ function drawChart() {
 	data.addColumn('number', 'Budget')
 	data.addRows([
 		['Used', usedBudget],
-		['Not Used', unusedBudget]
+		['Unused', unusedBudget]
 	]);
 
 	var options = {
