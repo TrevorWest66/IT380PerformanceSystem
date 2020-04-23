@@ -94,6 +94,11 @@ ul, #myUL {
 #report-button a{
 	color : white;
 }
+
 img {
 	width: 155px;
+}
+
+.maroon-link a{
+	color: maroon;
 }
