@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PerformanceAPI.Models;
 using PerformanceAPI.Gateway;
+using System.ComponentModel;
 
 namespace PerformanceAPI.Controllers
 {
@@ -43,10 +44,13 @@ namespace PerformanceAPI.Controllers
             return View();
         }
 
-        public IActionResult Employee()
+        public IActionResult Employee(int id)
         {
-            List<EmployeeModel> empModel = _db.GetDataForEmployeeNameDropDown().ToList();
-            return View(empModel);
+            // pass in from index
+            id = 100004;
+            List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
+
+            return View(empDetails);
         }
 
         public IActionResult PredictionSummaryReport(int Year)
@@ -109,16 +113,11 @@ namespace PerformanceAPI.Controllers
 
         public ActionResult EmployeeDetails(int id)
         {
-            Console.WriteLine(id.ToString());
-            if (id == 0)
-            {
-                return NotFound();
-            }
+            
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
-            Console.WriteLine("In for loop of actionresult");
-            ViewBag.PartialStyle = "display: none";
-            return View("_EmployeePartial", empDetails);
+            return View("Employee", empDetails);
+
         }
 
         public IActionResult ReportsHistory()

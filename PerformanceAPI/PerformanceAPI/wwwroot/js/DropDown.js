@@ -15,3 +15,4 @@ function showDiv(threadId, element) {
 	console.log("show div");
 }
 
+
