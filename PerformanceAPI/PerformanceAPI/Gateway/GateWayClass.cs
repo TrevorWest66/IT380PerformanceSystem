@@ -210,7 +210,57 @@ namespace PerformanceAPI.Gateway
 			return ActualsSummaryReportModelList;
 		}
 
-		//next method for a stored procedure goes here
+		//This will call the stored procedure for thr Index model
+		public IEnumerable<IndexModel> GetDataForIndexModel(int Year)
+		{
+			//makes a list to store each record from the database whhich are loaded into the model
+			List<IndexModel> indexModelList = new List<IndexModel>();
 
+			//makes the coonection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+
+				//makes the command for the stored procedure
+				//and set its type
+				//IMPORTANT! the string needs to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetDataForIndexModel", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				//set parameter
+				cmd.Parameters.AddWithValue("@CurrentYear", Year);
+
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model projects for each row and adds them to the list
+				while (dr.Read())
+				{
+
+					//instantiates a new model
+					IndexModel indModel = new IndexModel();
+
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
+					indModel.FirstName = dr["E_FIRST_NAME"].ToString();
+					indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
+					indModel.LastName = dr["E_LAST_NAME"].ToString();
+					indModel.PositionName = dr["POSITION_NAME"].ToString();
+					indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
+					indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
+					indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+					indModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+
+					//adds the model with the records data in it to the list
+					indexModelList.Add(indModel);
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return indexModelList;
+		}
+		//next method for a stored procedure goes here
 	}
 }

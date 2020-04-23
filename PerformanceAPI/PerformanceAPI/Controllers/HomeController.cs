@@ -23,9 +23,16 @@ namespace PerformanceAPI.Controllers
             _logger = logger;
         }
         
-        public IActionResult Index()
+        public IActionResult Index(int Year)
         {
-            return View();
+            //delete later
+            Year = 2020;
+            if (Year == 0)
+            {
+                return NotFound();
+            }
+            List<IndexModel> indModel = _db.GetDataForIndexModel(Year).ToList();
+            return View(indModel);
         }
 
         public IActionResult Login()
