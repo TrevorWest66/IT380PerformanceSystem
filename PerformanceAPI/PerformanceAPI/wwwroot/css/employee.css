@@ -42,7 +42,7 @@ a {
 }
 #employeedropdown
 ul {
-    background: grey;
+    background: #343a40;
     list-style: none;
     margin: 0;
     padding-left: 0;
@@ -51,7 +51,7 @@ ul {
 li {
     color: white;
     font-size: 1rem;
-    background: grey;
+    background: #343a40;
     display: block;
     float: left;
     padding: 0.15rem;
@@ -70,7 +70,7 @@ li {
     }
 #employeedropdown
 ul li ul {
-    background: grey;
+    background: #343a40;
     visibility: hidden;
     opacity: 0;
     min-width: 2rem;
