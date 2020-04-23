@@ -6,6 +6,10 @@
 
 <h1>Actuals Summary</h1>
 
+<div>
+    <button type="button" id="report-button" class="btn btn-dark">@Html.ActionLink("Back To Reports", "ReportsHistory")</button>
+</div>
+
 @{
     double usedBudget = 0;
     int employeesWithActuals = 0;
@@ -18,9 +22,9 @@
     CurrentUserModel.NumberOfEmployeesWithActuals = employeesWithActuals;
 
     @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
-    {
-        CurrentUserModel.overBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
-    }
+	{
+		CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
+	}
 }
 
 <p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
@@ -28,22 +32,29 @@
 <p class="hidden-data" id="employees-done">@CurrentUserModel.NumberOfEmployeesWithActuals</p>
 <p class="hidden-data" id="employees-total">@CurrentUserModel.NumberOfEmployees</p>
 
+@if (CurrentUserModel.CurrentReportYear)
+{
 <table id="predictions-report-charts">
     <tr>
         <td>
-            @if (CurrentUserModel.overBudgetAmount < 0)
-            {
+            @if (CurrentUserModel.OverBudgetAmount < 0)
+			{
                 <h3>You are overbudget by:</h3>
                 <h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
-            }
-            else
-            {
+			}
+			else
+			{
                 <div id="budget-chart"></div>
-            }
+			}
         </td>
         <td><div id="actuals-chart"></div></td>
     </tr>
 </table>
+}
+else
+{
+    <br />
+}
 
 <div>
     <table class="table table-striped table-bordered">

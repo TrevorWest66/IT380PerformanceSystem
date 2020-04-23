@@ -90,3 +90,7 @@ ul, #myUL {
 .hidden-data{
 	display: none;
 }
+
+#report-button a{
+	color : white;
+}

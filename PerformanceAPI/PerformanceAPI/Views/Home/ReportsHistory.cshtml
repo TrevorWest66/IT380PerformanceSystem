@@ -1,0 +1,64 @@
+﻿@model IEnumerable<PerformanceAPI.Models.ReportsHistoryModel>
+@{
+    ViewData["Title"] = "ReportsHistory";
+}
+
+<h1>Reports History</h1>
+
+<div>
+    <h3>Actuals</h3>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Report Name
+                </th>
+                <th>
+                    Budget
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+			{
+                <tr>
+                    <td>
+                        @Html.ActionLink(item.BudgetYear + " Report", "ActualsSummaryReport", new {Year=item.BudgetYear })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Budget)
+                    </td>
+                </tr>
+			}
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <h3>Predictions</h3>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Report Name
+                </th>
+                <th>
+                    Budget
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.ActionLink(item.BudgetYear + " Report", "PredictionSummaryReport", new { Year = item.BudgetYear })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Budget)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -41,7 +41,8 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					PredictionSummaryReportModel psrModel = new PredictionSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.acceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
+						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
 					{
 						psrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						psrModel.FirstName = dr["E_FIRST_NAME"].ToString();
@@ -156,7 +157,7 @@ namespace PerformanceAPI.Gateway
 			;
 		}
 
-		//This will call the stored procedure for the PredictionsSummaryReport model
+		//This will call the stored procedure for ActualsSummaryReport model
 		public IEnumerable<ActualsSummaryReportModel> GetDataForActualsSummaryReportModel(int Year)
 		{
 			// makes a list to store each record from the database whihc are loaded into the model
@@ -186,13 +187,14 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					ActualsSummaryReportModel asrModel = new ActualsSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.acceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
+						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
 					{
 						asrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						asrModel.EmployeeFirstname = dr["E_FIRST_NAME"].ToString();
 						asrModel.EmployeeMiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
 						asrModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
-						asrModel.PerformanceRating = dr["P_RATING_NAME"].ToString();
+						asrModel.PerformanceRating = dr["P_RATING_ID"].ToString();
 						asrModel.CurrentPosition = dr["POSITION_NAME"].ToString();
 						asrModel.PositionAfterReview = dr["PR_POSITION"].ToString();
 						asrModel.Salary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
@@ -209,6 +211,50 @@ namespace PerformanceAPI.Gateway
 			//returns the list of models
 			return ActualsSummaryReportModelList;
 		}
+
+		public IEnumerable<ReportsHistoryModel> GetDataForReportsHistoryModel()
+		{
+			// makes a list to store each record from the database whihc are loaded into the model
+			List<ReportsHistoryModel> ReportHistoryModelsList = new List<ReportsHistoryModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetDataForReportsHistory", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					ReportsHistoryModel rhModel = new ReportsHistoryModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					if (CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						rhModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						rhModel.Budget = Convert.ToDouble((dr["BUDGET"].ToString())).ToString("C");
+						rhModel.BudgetYear = Convert.ToInt32(dr["BUDGET_PERIOD"].ToString().Substring(6, 4));
+
+						//adds the model with the records data in it to the list
+						ReportHistoryModelsList.Add(rhModel);
+					}
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return ReportHistoryModelsList;
+		}
+
 
 		//next method for a stored procedure goes here
 

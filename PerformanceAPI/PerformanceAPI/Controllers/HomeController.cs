@@ -51,9 +51,16 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult PredictionSummaryReport(int Year)
         {
-            //delete later
-            Year = 2020;
-            if(Year == 0)
+            if (Year == 2020)
+            {
+                CurrentUserModel.CurrentReportYear = true;
+            }
+            else
+            {
+                CurrentUserModel.CurrentReportYear = false;
+            }
+
+            if (Year == 0)
             {
                 return NotFound();
             }
@@ -68,8 +75,15 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult ActualsSummaryReport(int Year)
         {
-            // delete this later
-            Year = 2020;
+            if(Year == 2020)
+            {
+                CurrentUserModel.CurrentReportYear = true;
+            }
+            else
+            {
+                CurrentUserModel.CurrentReportYear = false;
+            }
+
             if (Year == 0)
             {
                 return NotFound();
@@ -105,6 +119,12 @@ namespace PerformanceAPI.Controllers
             Console.WriteLine("In for loop of actionresult");
             ViewBag.PartialStyle = "display: none";
             return View("_EmployeePartial", empDetails);
+        }
+
+        public IActionResult ReportsHistory()
+        {
+            List<ReportsHistoryModel> reports = _db.GetDataForReportsHistoryModel().ToList();
+            return View(reports);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
