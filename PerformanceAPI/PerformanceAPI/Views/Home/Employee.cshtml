@@ -1,29 +1,58 @@
-﻿@model IEnumerable<PerformanceAPI.Models.EmployeeModel>
+﻿@model IEnumerable<PerformanceAPI.Models.EmployeeDetailsModel>
 
 
 @{
     ViewData["Title"] = "Employee";
 }
-<link rel="stylesheet" href="~/css/employee.css" />
-<h1>Employee</h1>
 
-<div>
-    <ul>
-        <li id="expandable">
-            Employees
-            <ul id="drop-down">
-                @foreach (var item in Model)
-                {
-                    <li>
-                        @Html.ActionLink(item.EmployeeLastName, "EmployeeDetails", new { id = item.EmployeeID })
-                    </li>
-                }
-            </ul>
-        </li>
-    </ul>
-</div>
+    <div class="col-md-4">
+        @await Component.InvokeAsync("Employee")
+    </div>
 
-<script src="~/js/DropDown.js"></script>
+<link rel="stylesheet" href="~/css/employeeDetails.css" />
+
+<table class="employeeDetails">
+    @foreach (var item in Model)
+    {
+        <thead>
+            <tr>
+                <th>Employee Details</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Employee ID</td>
+                <td>@Html.DisplayFor(modelItem => item.EmployeeID)</td>
+            </tr>
+            <tr>
+                <td>Full Name</td>
+                <td>@Html.DisplayFor(modelItem => item.FirstName)@Html.DisplayFor(modelItem => item.MiddleName)@Html.DisplayFor(modelItem => item.LastName)</td>
+            </tr>
+            <tr>
+                <td>Hire Date</td>
+                <td>@Html.DisplayFor(modelItem => item.HireDate)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.SalaryFlag) Salary</td>
+                <td>$@Html.DisplayFor(modelItem => item.CurrentSalary)</td>
+            </tr>
+            <tr>
+                <td>Current Position</td>
+                <td>@Html.DisplayFor(modelItem => item.Posistion)</td>
+            </tr>
+            <tr>
+                <td>Direct Supervisor</td>
+                <td>@Html.DisplayFor(modelItem => item.SupervisorFirstName)@Html.DisplayFor(modelItem => item.SupervisorLastName)</td>
+            </tr>
+            <tr>
+                <td>Team - Department</td>
+                <td>@Html.DisplayFor(modelItem => item.Team) - @Html.DisplayFor(modelItem => item.Department)</td>
+            </tr>
+        </tbody>
+    }
+
+</table>
 
 
 
