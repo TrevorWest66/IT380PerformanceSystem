@@ -11,7 +11,7 @@ function drawChart() {
 	data.addColumn('number', 'Employees')
 	data.addRows([
 		['Completed', completedEmployees],
-		['Incompleted', notCompletedEmployees]
+		['Incomplete', notCompletedEmployees]
 	]);
 
 	var options = {
