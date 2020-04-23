@@ -26,7 +26,7 @@
 
     @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
     {
-        CurrentUserModel.overBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
+        CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
     }
 }
 <p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
@@ -81,7 +81,7 @@
             <table id="predictions-report-charts">
                 <tr>
                     <td>
-                        @if (CurrentUserModel.overBudgetAmount < 0)
+                        @if (CurrentUserModel.OverBudgetAmount < 0)
                         {
                             <h3>You are overbudget by:</h3>
                             <h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
@@ -103,7 +103,7 @@
         <div class="tableDiv">
             <table class=" table table-bordered table-striped">   
                 <thead class=" thead-dark">
-                    <td colspan="9" scope="colgroup">Predictions not actualized</td>
+                    <!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
                     <tr>
                         <th>
                             @Html.DisplayNameFor(model => model.FirstName)
