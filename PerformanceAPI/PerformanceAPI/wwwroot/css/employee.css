@@ -19,7 +19,7 @@ ul li ul {
     opacity: 0;
     position: absolute;
     transition: all 0.5s ease;
-    margin-top: 0.25rem;
+    margin-top: auto;
     left: 0;
     display: none;
 }
@@ -50,10 +50,11 @@ ul {
 #employeedropdown
 li {
     color: white;
+    font-size: 1rem;
     background: grey;
     display: block;
     float: left;
-    padding: 0.5rem;
+    padding: 0.15rem;
     position: relative;
     text-decoration: none;
     transition-duration: 0.5s;
@@ -75,7 +76,7 @@ ul li ul {
     min-width: 2rem;
     position: absolute;
     transition: all 0.5s ease;
-    margin-top: 0.5rem;
+    margin-top: auto;
     left: 0;
     display: none;
 }
@@ -90,4 +91,8 @@ ul li ul:hover {
 ul li ul li {
     clear: both;
     width: 100%;
+}
+#employeedropdown
+nav {
+    margin-bottom: auto;
 }
