@@ -1,0 +1,31 @@
+﻿@model IEnumerable<PerformanceAPI.Models.EmployeeModel>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<link rel="stylesheet" href="~/css/employee.css" />
+<h1>Employee Details</h1>
+<nav role="navigation" id="employeedropdown" >
+    <ul>
+        <li id="expandable">
+            Select Employee &#x25BC
+            <ul id="drop-down" class="dropdown">
+                @foreach (var item in Model)
+                {
+                    <li>
+                        @Html.ActionLink(item.EmployeeLastName + ", " + item.EmployeeFirstName, "EmployeeDetails", new { id = item.EmployeeID })
+                    </li>
+                }
+            </ul>
+        </li>
+    </ul>
+</nav>
+<div>
+    
+
+    <br />
+
+
+</div>
+<script src="~/js/DropDown.js"></script>

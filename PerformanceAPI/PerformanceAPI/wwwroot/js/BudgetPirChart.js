@@ -14,7 +14,7 @@ function drawChart() {
 	data.addColumn('number', 'Budget')
 	data.addRows([
 		['Used', usedBudget],
-		['Not Used', unusedBudget]
+		['Unused', unusedBudget]
 	]);
 
 	var options = {
@@ -22,7 +22,7 @@ function drawChart() {
 		'titleTextStyle': { 'fontSize': '16'},
 		'width': '400',
 		'height': '300',
-		'colors': ['#CD1C1B', '#757575']
+		'colors': ['maroon', '#757575']
 	};
 
 	var chart = new google.visualization.PieChart(document.getElementById('budget-chart'));

@@ -41,7 +41,8 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					PredictionSummaryReportModel psrModel = new PredictionSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.acceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
+						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
 					{
 						psrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						psrModel.FirstName = dr["E_FIRST_NAME"].ToString();
@@ -88,15 +89,19 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					//instantiates a new model
-					EmployeeModel employeeModel = new EmployeeModel();
-					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					employeeModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
-					employeeModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
-					employeeModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
+						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					{
+						//instantiates a new model
+						EmployeeModel employeeModel = new EmployeeModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						employeeModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+						employeeModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+						employeeModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 
-					//adds the model with the records data in it to the list
-					employeeModelList.Add(employeeModel);
+						//adds the model with the records data in it to the list
+						employeeModelList.Add(employeeModel);
+					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -117,11 +122,12 @@ namespace PerformanceAPI.Gateway
 				//makes the command for the stored procedure
 				//and sets its type
 				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
-				SqlCommand cmd = new SqlCommand("getEmployeesDetails", con)
+				SqlCommand cmd = new SqlCommand("getDataForEmployeeDetailsTable", con)
 				{
 					CommandType = CommandType.StoredProcedure
 				};
-				cmd.Parameters.AddWithValue("@employeeID", id);
+				cmd.Parameters.AddWithValue("@EmployeeID", id);
+				cmd.Parameters.AddWithValue("@CurrentYear", DateTime.Now.ToString("yyyy"));
 				//opens the connection
 				con.Open();
 				//executes the stored procedure
@@ -140,10 +146,15 @@ namespace PerformanceAPI.Gateway
 					employeeDetailModel.Team = dr["TEAM_NAME"].ToString();
 					employeeDetailModel.Department = dr["DEPT_NAME"].ToString();
 					employeeDetailModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
-					employeeDetailModel.SalaryFlag = Convert.ToBoolean(dr["SALARY_FLAG"].ToString());
-					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Substring(0, 9);
+					employeeDetailModel.SalaryFlag = salaryFlagToString(Convert.ToBoolean(dr["SALARY_FLAG"]));
+					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Split(" ")[0];
 					employeeDetailModel.SupervisorFirstName = dr["SUPERVISOR_FIRST_NAME"].ToString();
 					employeeDetailModel.SupervisorLastName = dr["SUPERVISOR_LAST_NAME"].ToString();
+					employeeDetailModel.LastReviewDate = nullReviewDate(dr["LAST_REVIEW_DATE"].ToString());
+					employeeDetailModel.ProjectedPosition = nullProjection(dr["PROJECTED_POSITION"].ToString());
+					employeeDetailModel.DateOfProjection = nullProjectionDate(dr["DATE_OF_PROJECTION"].ToString());
+					employeeDetailModel.ProjectedSalaryIncrease = decimalToPrecentString(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					employeeDetailModel.ProjectedRating = nullProjection(dr["PR_PROJECTION"].ToString());
 
 					//adds the model with the records data in it to the list
 					employeeDetailsModelList.Add(employeeDetailModel);
@@ -156,7 +167,72 @@ namespace PerformanceAPI.Gateway
 			;
 		}
 
-		//This will call the stored procedure for the PredictionsSummaryReport model
+		private string nullReviewDate (string review)
+		{
+			if (review.Equals("") || review.Equals(null))
+			{
+				return "This employee has not been reviewed.";
+			}
+			else
+			{
+				return review.Split(" ")[0];
+			}
+		}
+
+		/**
+		 * Returns "Salary" or "Hourly" depending on the pay type
+		 */
+		private string salaryFlagToString(Boolean boo)
+		{
+			if (boo)
+			{
+				return "Salary";
+			} else
+			{
+				return "Hourly";
+			}
+		}
+
+		/**
+		 * Returns "-----" if the projection is null or ""
+		 */
+		private string nullProjection(string projection)
+		{
+			if (projection.Equals("") || projection.Equals(null)) {
+				return "-----";
+			}
+			else
+			{
+				return projection;
+			}
+		}
+
+		private string decimalToPrecentString(string increase)
+		{
+			if (increase.Equals("") || increase.Equals(null))
+			{
+				return "-----";
+			}
+			double increaseint = Convert.ToDouble(increase);
+			return ((increaseint * 100).ToString() + "%");
+		}
+
+		/**
+		 * Returns "A projection has not been made." if the projection is null or ""
+		 */
+		private string nullProjectionDate(string projection)
+		{
+			if (projection.Equals("") || projection.Equals(null))
+			{
+				return "A projection has not been made.";
+			}
+			else
+			{
+				return projection.Split(" ")[0];
+			}
+		}
+
+		//This will call the stored procedure for ActualsSummaryReport model
 		public IEnumerable<ActualsSummaryReportModel> GetDataForActualsSummaryReportModel(int Year)
 		{
 			// makes a list to store each record from the database whihc are loaded into the model
@@ -186,13 +262,14 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					ActualsSummaryReportModel asrModel = new ActualsSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.acceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
+						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
 					{
 						asrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						asrModel.EmployeeFirstname = dr["E_FIRST_NAME"].ToString();
 						asrModel.EmployeeMiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
 						asrModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
-						asrModel.PerformanceRating = dr["P_RATING_NAME"].ToString();
+						asrModel.PerformanceRating = dr["P_RATING_ID"].ToString();
 						asrModel.CurrentPosition = dr["POSITION_NAME"].ToString();
 						asrModel.PositionAfterReview = dr["PR_POSITION"].ToString();
 						asrModel.Salary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
@@ -208,6 +285,49 @@ namespace PerformanceAPI.Gateway
 			}
 			//returns the list of models
 			return ActualsSummaryReportModelList;
+		}
+
+		public IEnumerable<ReportsHistoryModel> GetDataForReportsHistoryModel()
+		{
+			// makes a list to store each record from the database whihc are loaded into the model
+			List<ReportsHistoryModel> ReportHistoryModelsList = new List<ReportsHistoryModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetDataForReportsHistory", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					ReportsHistoryModel rhModel = new ReportsHistoryModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					if (CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						rhModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						rhModel.Budget = Convert.ToDouble((dr["BUDGET"].ToString())).ToString("C");
+						rhModel.BudgetYear = Convert.ToInt32(dr["BUDGET_PERIOD"].ToString().Substring(6, 4));
+
+						//adds the model with the records data in it to the list
+						ReportHistoryModelsList.Add(rhModel);
+					}
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return ReportHistoryModelsList;
 		}
 
 		//This will call the stored procedure for thr Index model

@@ -11,7 +11,7 @@ function drawChart() {
 	data.addColumn('number', 'Employees')
 	data.addRows([
 		['Completed', completedEmployees],
-		['Not Completed', notCompletedEmployees]
+		['Incomplete', notCompletedEmployees]
 	]);
 
 	var options = {
@@ -19,7 +19,7 @@ function drawChart() {
 		'titleTextStyle': { 'fontSize': '16' },
 		'width': '400',
 		'height': '300',
-		'colors': ['#CD1C1B', '#757575']
+		'colors': ['maroon', '#757575']
 	};
 
 	var chart = new google.visualization.PieChart(document.getElementById('projections-chart'));
