@@ -1,0 +1,32 @@
+﻿@model IEnumerable<PerformanceAPI.Models.PositionsModel>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<link rel="stylesheet" href="~/css/PositionDropDown.css" />
+<nav role="navigation" id="employeedropdown" >
+    <ul class="navigation">
+        <li id="expandable" >
+            Positions and Salary Ranges &#x25BC
+            <ul id="drop-down" class="dropdown">
+                @foreach (var item in Model)
+                {
+                <li>
+                    <a href="#" class="float-left">
+                        @Html.DisplayFor(modelItem => item.PositionName)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </a>
+                    <a href="#" class="float-right">
+                        $@Html.DisplayFor(modelItem => item.SalaryLowerBound) - $@Html.DisplayFor(modelItem => item.SalaryUpperBound)
+                    </a>
+
+                </li>
+                }
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+
+<div>
+    <br />
+</div>

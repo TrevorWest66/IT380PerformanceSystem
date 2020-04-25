@@ -110,7 +110,9 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Projections()
         {
-            return View();
+            List<ProjectionsModel> empDetails = _db.GetEmployeeDataForProjections().ToList();
+
+            return View(empDetails);
         }
 
         public IActionResult Details()
@@ -124,6 +126,15 @@ namespace PerformanceAPI.Controllers
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
             return View("Employee", empDetails);
+
+        }
+
+        public ActionResult PositionNames()
+        {
+
+            List<PositionsModel> positions = _db.DisplayPositionInformation().ToList();
+
+            return View("Projections", positions);
 
         }
 
