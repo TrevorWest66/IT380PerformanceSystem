@@ -149,5 +149,25 @@ namespace PerformanceAPI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        /*
+        [HttpPost]
+        public IActionResult GetProjectionDetails()
+        {
+            SaveProjectionDetailsModel umodel = new SaveProjectionDetailsModel();
+            //umodel.Name = HttpContext.Request.Form["txtName"].ToString();
+           // umodel.Age = Convert.ToInt32(HttpContext.Request.Form["txtAge"]);
+           //umodel.City = HttpContext.Request.Form["txtCity"].ToString();
+            int result = umodel.SaveProjectionDetails();
+            if (result > 0)
+            {
+                ViewBag.Result = "Data Saved Successfully";
+            }
+            else
+            {
+                ViewBag.Result = "Something Went Wrong";
+            }
+            return View("Projections");
+        }*/
+
     }
 }
