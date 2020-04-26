@@ -9,13 +9,13 @@ using PerformanceAPI.Gateway;
 
 namespace PerformanceAPI.Controllers
 {
-    public class PositionViewComponent : ViewComponent
+    public class ProjectionEmployeesViewComponent : ViewComponent
     {
         readonly GateWayClass _db = new GateWayClass();
         public IViewComponentResult Invoke()
         {
-            List<PositionsModel> position = _db.DisplayPositionInformation().ToList();
-            return View(position);
+            List<EmployeeListProjectionsModel> projection = _db.GetEmployeesForProjections().ToList();
+            return View(projection);
         }
     }
 }

@@ -53,8 +53,10 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Employee(int id)
         {
-            // pass in from index
-            id = 100004;
+            if (id.Equals(null))
+            {
+                return View("Employee");
+            }
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
             return View(empDetails);
@@ -108,9 +110,9 @@ namespace PerformanceAPI.Controllers
         }
 
 
-        public IActionResult Projections()
+        public IActionResult Projections(int id)
         {
-            List<ProjectionsModel> empDetails = _db.GetEmployeeDataForProjections().ToList();
+            List<ProjectionsModel> empDetails = _db.GetEmployeeDataForProjections(id).ToList();
 
             return View(empDetails);
         }
@@ -122,16 +124,31 @@ namespace PerformanceAPI.Controllers
 
         public ActionResult EmployeeDetails(int id)
         {
-            
+            if (id.Equals(null))
+            {
+                return View("Projections");
+            }
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
             return View("Employee", empDetails);
 
         }
 
+        public ActionResult MakeProjectionForEmployee(int id)
+        {
+            if (id.Equals(null))
+            {
+                return View("Projections");
+            }
+            List<ProjectionsModel> empProjection  = _db.GetEmployeeDataForProjections(id).ToList();
+
+            return View("Projections", empProjection);
+
+        }
+
         public ActionResult PositionNames()
         {
-
+            
             List<PositionsModel> positions = _db.DisplayPositionInformation().ToList();
 
             return View("Projections", positions);
