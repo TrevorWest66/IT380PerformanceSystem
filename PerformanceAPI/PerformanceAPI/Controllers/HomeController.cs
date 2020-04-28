@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using PerformanceAPI.Models;
 using PerformanceAPI.Gateway;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PerformanceAPI.Controllers
 {
@@ -110,11 +111,13 @@ namespace PerformanceAPI.Controllers
         }
 
 
-        public IActionResult Projections(int id)
+        public IActionResult Projections()
         {
-            List<ProjectionsModel> empDetails = _db.GetEmployeeDataForProjections(id).ToList();
+            List<EmployeeListProjectionsModel> empList = _db.GetEmployeesForProjections().ToList();
+            ViewBag.EmployeeList = new SelectList(empList, "EmployeeID", "LastName");
 
-            return View(empDetails);
+            return View();
+
         }
 
         public IActionResult Details()
@@ -131,18 +134,6 @@ namespace PerformanceAPI.Controllers
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
             return View("Employee", empDetails);
-
-        }
-
-        public ActionResult MakeProjectionForEmployee(int id)
-        {
-            if (id.Equals(null))
-            {
-                return View("Projections");
-            }
-            List<ProjectionsModel> empProjection  = _db.GetEmployeeDataForProjections(id).ToList();
-
-            return View("Projections", empProjection);
 
         }
 
@@ -166,25 +157,35 @@ namespace PerformanceAPI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        /*
-        [HttpPost]
-        public IActionResult GetProjectionDetails()
+        
+        public ActionResult SaveProjection(EmployeeListProjectionsModel model)
         {
-            SaveProjectionDetailsModel umodel = new SaveProjectionDetailsModel();
-            //umodel.Name = HttpContext.Request.Form["txtName"].ToString();
-           // umodel.Age = Convert.ToInt32(HttpContext.Request.Form["txtAge"]);
-           //umodel.City = HttpContext.Request.Form["txtCity"].ToString();
-            int result = umodel.SaveProjectionDetails();
-            if (result > 0)
+
+            try
             {
-                ViewBag.Result = "Data Saved Successfully";
-            }
-            else
+                ProjectionsModel projection = new ProjectionsModel();
+                projection.EmployeeID = model.EmployeeID;
+                projection.ProjectedPosition = model.projectedPosition;
+                projection.ProjectedSalaryIncrease = (Convert.ToDouble(model.projectedSalaryIncrease) / 100);
+                projection.ProjectedRating = model.projectedReview;
+                if (model.comments.Equals(null) || model.comments.Trim().Equals(""))
+                {
+                    projection.ProjectionsComments = null;
+                } else
+                {
+                    projection.ProjectionsComments = model.comments;
+                }
+                _db.AddProjectionsDataToProjectionsTable(projection);
+                return RedirectToAction("Projections");
+
+            } 
+            catch (Exception e)
             {
-                ViewBag.Result = "Something Went Wrong";
-            }
-            return View("Projections");
-        }*/
+                throw e;
+            } 
+
+            
+        }
 
     }
 }

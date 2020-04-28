@@ -274,53 +274,6 @@ namespace PerformanceAPI.Gateway
 			;
 		}
 
-		public IEnumerable<ProjectionsModel> GetEmployeeDataForProjections(int employeeID)
-		{
-			// makes a list to store each record from the database which are loaded into the model
-			List<ProjectionsModel> employeeProjectionsList = new List<ProjectionsModel>();
-
-			//makes the connection
-			using (SqlConnection con = new SqlConnection(connectionString))
-			{
-				//makes the command for the stored procedure
-				//and sets its type
-				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
-				SqlCommand cmd = new SqlCommand("GetEmployeeDetailsForProjectionsPage", con)
-				{
-					CommandType = CommandType.StoredProcedure
-				};
-				cmd.Parameters.AddWithValue("@CurrentYear", DateTime.Now.ToString("yyyy"));
-				//opens the connection
-				con.Open();
-				//executes the stored procedure
-				SqlDataReader dr = cmd.ExecuteReader();
-				//creates the model objexts for each row and adds them to the list
-				while (dr.Read())
-				{
-					if (CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())) && Convert.ToInt32(dr["EMPLOYEE_ID"].ToString()).Equals(employeeID))
-					{
-						//instantiates a new model
-						ProjectionsModel employeeModel = new ProjectionsModel();
-						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-						employeeModel.LastName = dr["E_LAST_NAME"].ToString();
-						employeeModel.FirstName = dr["E_FIRST_NAME"].ToString();
-						employeeModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
-						employeeModel.CurrentPosition = dr["POSITION_NAME"].ToString();
-						employeeModel.SalaryFlag = salaryFlagToString(Convert.ToBoolean(dr["SALARY_FLAG"]));
-						employeeModel.EmployeeCurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString()).ToString("N");
-						employeeModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
-
-						employeeProjectionsList.Add(employeeModel);
-					}
-				}
-				//IMPORTANT! dont forget to close the connection
-				con.Close();
-			}
-			//returns the list of models
-			return employeeProjectionsList;
-			;
-		}
-
 		public IEnumerable<PositionsModel> DisplayPositionInformation()
 		{
 			// makes a list to store each record from the database which are loaded into the model
@@ -458,6 +411,26 @@ namespace PerformanceAPI.Gateway
 			}
 			//returns the list of models
 			return ReportHistoryModelsList;
+		}
+
+		public void AddProjectionsDataToProjectionsTable(ProjectionsModel model)
+		{
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				SqlCommand cmd = new SqlCommand("AddNewProjections", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				cmd.Parameters.AddWithValue("@EmployeeID", model.EmployeeID);
+				cmd.Parameters.AddWithValue("@PrProjection", model.ProjectedRating);
+				cmd.Parameters.AddWithValue("@SalaryIncrease", model.ProjectedSalaryIncrease);
+				cmd.Parameters.AddWithValue("@ProjectedPosition", model.ProjectedPosition);
+				cmd.Parameters.AddWithValue("@Comments", model.ProjectionsComments);
+
+				con.Open();
+				cmd.ExecuteNonQuery();
+				con.Close();
+			}
 		}
 
 		//This will call the stored procedure for thr Index model
