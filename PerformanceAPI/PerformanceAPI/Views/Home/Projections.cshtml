@@ -18,22 +18,22 @@
 </script>
 
 
-<div class="container">
+<div class="container" style="position: center">
     @using (Html.BeginForm("SaveProjection", "Home", FormMethod.Post))
         
     {
     <span>Employee: </span>
-    @Html.DropDownListFor(model => model.EmployeeID, ViewBag.EmployeeList as SelectList, "-- select employee --", new { @class = "form-control" })
+    @Html.DropDownListFor(model => model.EmployeeID, ViewBag.EmployeeList as SelectList, "-- Select Employee --", new { @class = "form-control" })
     <span>Projected Review Rating: </span>
-    @Html.TextBoxFor(model => model.projectedReview, new { @class = "form-control", @placeholder = "Rating" })
+    @Html.TextBoxFor(model => model.projectedReview, new { @class = "form-control", @placeholder = "Rating" } )
     <span>Projected Increase (%): </span>
-    @Html.TextBoxFor(model => model.projectedSalaryIncrease, new { @class = "form-control", @placeholder = "ex. 3.5, 3, 3.025" })
+    @Html.TextBoxFor(model => model.projectedSalaryIncrease, new { @class = "form-control", @placeholder = "i.e. 3.5, 0.5" })
     <span>Projected Position: </span>
-    @Html.TextBoxFor(model => model.projectedPosition, new { @class = "form-control", @placeholder = "Position" })
+    @Html.TextBoxFor(model => model.projectedPosition, new { @class = "form-control", @placeholder = "Position" } )
     <span>Comments: </span>
-    @Html.TextAreaFor(model => model.comments, new { @class = "form-control" })
+    @Html.TextAreaFor(model => model.comments, new { @class = "form-control", @placeholder = "500 character max" })
 
-    <input type="submit" value="Submit" class="btn btn-block btn-primary" onclick="javascript:return ShowMessage();" />
+    <input type="submit" value="Submit" class="btn btn-block" onclick="javascript:return ShowMessage();" />
     }
 
 

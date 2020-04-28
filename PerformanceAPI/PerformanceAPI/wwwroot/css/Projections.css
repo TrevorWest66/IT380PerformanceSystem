@@ -1,1 +1,63 @@
-﻿
+﻿form {
+    border: 1px;
+    border-color: black;
+    border-radius: 2.5px;
+    background: lightgrey;
+    padding: 10px;
+    position: center
+}
+
+select {
+    position: center;
+}
+input[type='text'], input[type='submit'] {
+    padding: 10px;
+    position: center;
+    box-shadow: maroon;
+}
+    input[type='text']:hover, input[type='submit']:hover {
+        border-color: maroon;
+    }
+    input[type='text']:active, input[type='submit']:active {
+        outline: none;
+        outline-color: maroon;
+        border-color: maroon;
+    }
+input[type='submit'] {
+    background-color: darkgrey;
+    border-color: black;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    box-shadow: maroon;
+}
+    input[type='submit']:hover {
+        background-color: maroon;
+        color: white;
+        border-color: maroon;
+  
+    }
+    input[type='submit']:active {
+        flood-color: none;
+    }
+select:hover {
+    outline: none;
+    outline-color: none;
+    border-color: maroon;
+}
+    select:active {
+    }
+select:hover option:hover {
+    background-color: maroon;
+    color: white;
+    outline-color: none;
+}
+select:active {
+    background-color: maroon;
+}
+
+textarea:hover {
+    border-color: maroon;
+}
+
+
