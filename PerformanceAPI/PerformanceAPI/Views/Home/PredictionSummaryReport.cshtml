@@ -100,41 +100,41 @@ else
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EmployeeID)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.MiddleName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProjectedPR)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CurrentPosition)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProjectedPosition)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CurrentSalary)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SalaryIncrease)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Supervisor)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DateOfProjection)
-                    </td>
-                </tr>
+            <tr>
+                <td class="maroon-link">
+                    @Html.ActionLink(item.EmployeeID + "", "EditProjection", new { id = item.EmployeeID })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MiddleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectedPR)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentPosition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectedPosition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentSalary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SalaryIncrease)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supervisor)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfProjection)
+                </td>
+            </tr>
             }
         </tbody>
     </table>

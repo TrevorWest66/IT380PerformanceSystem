@@ -590,6 +590,75 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
+		public ProjectionsModel GetMostRecentProjectionForAnEmployee(int employeeID)
+		{
+
+			ProjectionsModel projection = new ProjectionsModel();
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{	
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetMostRecentProjectionForAnEmployee", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//set the params
+				cmd.Parameters.AddWithValue("@EmployeeID", employeeID);
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					projection.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+					projection.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
+					projection.ProjectedRating = dr["PR_PROJECTION"].ToString();
+					projection.ProjectedSalaryIncrease =  1 + Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					projection.ProjectedPosition = dr["PROJECTED_POSITION"].ToString();
+					projection.ProjectionsComments = dr["COMMMENTS"].ToString();
+					projection.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+					projection.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			return projection;
+		}
+
+		public void UpdateProjectionByID(ProjectionsModel projection)
+		{
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("UpdateProjectionByEmployeeID", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//set the params
+				cmd.Parameters.AddWithValue("@EmployeeID", projection.EmployeeID);
+				cmd.Parameters.AddWithValue("@DateOfProjections", projection.DateOfProjection);
+				cmd.Parameters.AddWithValue("@PrProjection", projection.ProjectedRating);
+				cmd.Parameters.AddWithValue("@SalaryIncrease", (projection.ProjectedSalaryIncrease - 1));
+				cmd.Parameters.AddWithValue("@ProjectedPosition", projection.ProjectedPosition);
+				cmd.Parameters.AddWithValue("@Comments", projection.ProjectionsComments);
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				cmd.ExecuteNonQuery();
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+		}
+
 		//next method for a stored procedure goes here
 
 	}

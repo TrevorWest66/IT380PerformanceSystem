@@ -13,6 +13,9 @@ namespace PerformanceAPI.Models
         public double ProjectedSalaryIncrease { get; set; }
         public string ProjectedPosition { get; set; }
         public string ProjectionsComments { get; set; }
+        public string EmployeeFirstName { get; set; }
+        public string EmployeeLastName { get; set; }
+        public string DateOfProjection { get; set; }
 
         /*
        public int SaveProjectionDetails()

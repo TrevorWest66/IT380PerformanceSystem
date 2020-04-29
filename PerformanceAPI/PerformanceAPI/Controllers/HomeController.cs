@@ -177,7 +177,7 @@ namespace PerformanceAPI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        
+
         public ActionResult SaveProjection(EmployeeListProjectionsModel model)
         {
 
@@ -200,16 +200,55 @@ namespace PerformanceAPI.Controllers
 
                 _db.AddProjectionsDataToProjectionsTable(projection);
                 return RedirectToAction("Projections");
-            } 
+            }
             catch (Exception e)
             {
                 return RedirectToAction("Projections");
             }
+        }
 
-           
+            public IActionResult EditProjection(int id)
+            {
+                {
+                    if (id == 0)
+                    {
+                        return NotFound();
+                    }
 
+                    ProjectionsModel projection = _db.GetMostRecentProjectionForAnEmployee(id);
+                    if (projection == null)
+                    {
+                        return NotFound();
+                    }
+                    return View(projection);
+                }
+            }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditProjection(int id, [Bind] ProjectionsModel projection)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    projection.EmployeeID = id;
+                    _db.UpdateProjectionByID(projection);
+                    return RedirectToAction("PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear)});
+                }
+                return View(_db);
+            }
+            catch
+            {
+                return View();
+            }
         }
 
     }
+
 }
