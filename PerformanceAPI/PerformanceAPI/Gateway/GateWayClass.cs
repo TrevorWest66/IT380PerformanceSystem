@@ -269,7 +269,7 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					if (CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
 					{
 						//instantiates a new model
 						EmployeeListProjectionsModel employeeModel = new EmployeeListProjectionsModel();
@@ -285,7 +285,6 @@ namespace PerformanceAPI.Gateway
 			}
 			//returns the list of models
 			return employeeProjectionsList;
-			;
 		}
 
 		public IEnumerable<PositionsModel> DisplayPositionInformation()
