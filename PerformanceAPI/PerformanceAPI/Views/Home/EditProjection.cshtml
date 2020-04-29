@@ -13,17 +13,17 @@
             <h3>Edit Projection</h3>
             <div class="form-group">
                 <label asp-for="EmployeeID" class="control-label"></label>
-                <input asp-for="EmployeeID" class="form-control" disabled/>
+                <input asp-for="EmployeeID" class="form-control" disabled />
                 <span asp-validation-for="EmployeeID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EmployeeFirstName" class="control-label"></label>
-                <input asp-for="EmployeeFirstName" class="form-control" disabled/>
+                <input asp-for="EmployeeFirstName" class="form-control" disabled />
                 <span asp-validation-for="EmployeeFirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EmployeeLastName" class="control-label"></label>
-                <input asp-for="EmployeeLastName" class="form-control" disabled/>
+                <input asp-for="EmployeeLastName" class="form-control" disabled />
                 <span asp-validation-for="EmployeeLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -54,13 +54,13 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+            <div>
+                @Html.ActionLink("Cancel", "PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear) })
+            </div>
         </form>
     </div>
 </div>
 
-<div>
-    @Html.ActionLink("Back to List", "PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear)})
-</div>
 
 <script src="~/js/Projections.js" type="text/javascript"></script>
 <link rel="stylesheet" href="~/css/Projections.css" />
