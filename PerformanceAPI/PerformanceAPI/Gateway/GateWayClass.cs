@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using PerformanceAPI.Models;
+using static PerformanceAPI.Models.db;
 
 namespace PerformanceAPI.Gateway
 {
@@ -113,15 +114,11 @@ namespace PerformanceAPI.Gateway
 
 		public IEnumerable<EmployeeDetailsModel> DisplayAnEmployeesData(int id)
 		{
-			// makes a list to store each record from the database which are loaded into the model
 			List<EmployeeDetailsModel> employeeDetailsModelList = new List<EmployeeDetailsModel>();
 
-			//makes the connection
 			using (SqlConnection con = new SqlConnection(connectionString))
+
 			{
-				//makes the command for the stored procedure
-				//and sets its type
-				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
 				SqlCommand cmd = new SqlCommand("getDataForEmployeeDetailsTable", con)
 				{
 					CommandType = CommandType.StoredProcedure
@@ -132,7 +129,6 @@ namespace PerformanceAPI.Gateway
 				con.Open();
 				//executes the stored procedure
 				SqlDataReader dr = cmd.ExecuteReader();
-				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
 					//instantiates a new model
@@ -155,6 +151,7 @@ namespace PerformanceAPI.Gateway
 					employeeDetailModel.DateOfProjection = nullProjectionDate(dr["DATE_OF_PROJECTION"].ToString());
 					employeeDetailModel.ProjectedSalaryIncrease = decimalToPrecentString(dr["SALARY_INCREASE_PROJECTION"].ToString());
 					employeeDetailModel.ProjectedRating = nullProjection(dr["PR_PROJECTION"].ToString());
+					employeeDetailModel.ProjectionComments = nullProjectionComments(dr["COMMMENTS"].ToString());
 
 					//adds the model with the records data in it to the list
 					employeeDetailsModelList.Add(employeeDetailModel);
@@ -167,9 +164,9 @@ namespace PerformanceAPI.Gateway
 			;
 		}
 
-		private string nullReviewDate (string review)
+		public string nullReviewDate(string review)
 		{
-			if (review.Equals("") || review.Equals(null))
+			if (String.IsNullOrEmpty(review))
 			{
 				return "This employee has not been reviewed.";
 			}
@@ -179,26 +176,41 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
+
 		/**
 		 * Returns "Salary" or "Hourly" depending on the pay type
 		 */
-		private string salaryFlagToString(Boolean boo)
+		public string salaryFlagToString(Boolean boo)
 		{
 			if (boo)
 			{
 				return "Salary";
-			} else
+			}
+			else
 			{
 				return "Hourly";
+			}
+		}
+
+		public string nullProjectionComments(string projecton)
+		{
+			if (String.IsNullOrEmpty(projecton))
+			{
+				return "-----";
+			}
+			else
+			{
+				return projecton;
 			}
 		}
 
 		/**
 		 * Returns "-----" if the projection is null or ""
 		 */
-		private string nullProjection(string projection)
+		public string nullProjection(string projection)
 		{
-			if (projection.Equals("") || projection.Equals(null)) {
+			if (String.IsNullOrEmpty(projection))
+			{
 				return "-----";
 			}
 			else
@@ -207,9 +219,10 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
-		private string decimalToPrecentString(string increase)
+
+		public string decimalToPrecentString(string increase)
 		{
-			if (increase.Equals("") || increase.Equals(null))
+			if (String.IsNullOrEmpty(increase))
 			{
 				return "-----";
 			}
@@ -220,7 +233,7 @@ namespace PerformanceAPI.Gateway
 		/**
 		 * Returns "A projection has not been made." if the projection is null or ""
 		 */
-		private string nullProjectionDate(string projection)
+		public string nullProjectionDate(string projection)
 		{
 			if (projection.Equals("") || projection.Equals(null))
 			{
@@ -232,7 +245,10 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
-		public IEnumerable<EmployeeListProjectionsModel> GetEmployeesForProjections()
+
+
+
+	public IEnumerable<EmployeeListProjectionsModel> GetEmployeesForProjections()
 		{
 			// makes a list to store each record from the database which are loaded into the model
 			List<EmployeeListProjectionsModel> employeeProjectionsList = new List<EmployeeListProjectionsModel>();

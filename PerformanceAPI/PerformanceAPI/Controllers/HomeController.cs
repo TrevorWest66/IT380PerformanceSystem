@@ -164,27 +164,31 @@ namespace PerformanceAPI.Controllers
             try
             {
                 ProjectionsModel projection = new ProjectionsModel();
+                if (String.IsNullOrEmpty(model.comments))
+                {
+                    projection.ProjectionsComments = "No comments";
+                }
+                else
+                {
+                    projection.ProjectionsComments = model.comments;
+                }
+
                 projection.EmployeeID = model.EmployeeID;
                 projection.ProjectedPosition = model.projectedPosition;
                 projection.ProjectedSalaryIncrease = (Convert.ToDouble(model.projectedSalaryIncrease) / 100);
                 projection.ProjectedRating = model.projectedReview;
-                if (model.comments.Equals(null) || model.comments.Trim().Equals(""))
-                {
-                    projection.ProjectionsComments = null;
-                } else
-                {
-                    projection.ProjectionsComments = model.comments;
-                }
+
                 _db.AddProjectionsDataToProjectionsTable(projection);
                 return RedirectToAction("Projections");
-
             } 
             catch (Exception e)
             {
-                throw e;
-            } 
+                return RedirectToAction("Projections");
+            }
 
-            
+           
+
+
         }
 
     }
