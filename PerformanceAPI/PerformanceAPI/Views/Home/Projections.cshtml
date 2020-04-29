@@ -1,37 +1,42 @@
-﻿@model IEnumerable<PerformanceAPI.Models.ProjectionsModel>
+﻿@model PerformanceAPI.Models.EmployeeListProjectionsModel
 @{
     ViewData["Title"] = "Projections";
 }
 <script src="~/js/Projections.js" type="text/javascript"></script>
 <link rel="stylesheet" href="~/css/Projections.css" />
 
-<h1>Projections</h1>
 
-<h2>Enter Projections</h2>
-@await Component.InvokeAsync("Position")
-<div>
-    @foreach (var item in Model)
-    {
-    <table class="individualProjection" style="width:1050px">
-        <tr>
-            <td style="width: 0px;"> </td>
-            <td class="empNameDetails">@Html.DisplayFor(modelItem => item.FirstName)  @Html.DisplayFor(modelItem => item.LastName) @Html.DisplayFor(modelItem => item.EmployeeID)</td>
-            <td class="details">@Html.DisplayFor(modelItem => item.SalaryFlag): $@Html.DisplayFor(modelItem => item.EmployeeCurrentSalary)</td>
-            <td> </td>
-        </tr>
-        <tr>
-            <td style="width: 0px;"> </td>
-            <td class="details">Projected Position: <input type="text" placeholder="@Html.DisplayFor(modelItem => item.CurrentPosition)" /></td>
-            <td class="details">Projected % Pay Increase:<input type="text" /></td>
-            <td class="details"> Projected Performance Rating:<input type="text" /></td>
-        </tr>
-    </table>
-    <table class="comments" style="width:1050px">
-        <tr style="height: 10px;">
-            <td><input type="text" style="height: 40px; width: 1000px" placeholder="Comments"/> </td>
-        </tr>
-    </table>
-        
+<script>
+    function ShowMessage() {
+        alert("Projections was submitted successfully");
     }
+</script>
+
+
+<div class="container" style="position: center">
+    @using (Html.BeginForm("SaveProjection", "Home", FormMethod.Post))
+        
+    {
+    <span>Employee: </span>
+    @Html.DropDownListFor(model => model.EmployeeID, ViewBag.EmployeeList as SelectList, "-- Select Employee --", new { @class = "form-control", @required  = "required"})
+    <span>Projected Review Rating: </span>
+    @Html.TextBoxFor(model => model.projectedReview, new { @class = "form-control", @placeholder = "Rating", @required  = "required"} )
+    <span>Projected Increase (%): </span>
+    @Html.TextBoxFor(model => model.projectedSalaryIncrease, new { @class = "form-control", @placeholder = "i.e. 3.5, 0.5", @required  = "required"} )
+    <span>Projected Position: </span>
+    @Html.TextBoxFor(model => model.projectedPosition, new { @class = "form-control", @placeholder = "Position", @required  = "required" } )
+    <span>Comments: </span>
+    @Html.TextAreaFor(model => model.comments, new { @class = "form-control", @placeholder="500 character max"})
+
+    <input type="submit" value="Submit" class="btn btn-block btn-primary" onclick="javascript:return ShowMessage();" />
+    }
+    
 
 </div>
+
+<div style="display: none;">
+    <div>@await Component.InvokeAsync("Positions")</div>
+    <img class="salaryimage" src="~/Images/SalaryIncrease.jpg" />
+</div>
+
+

@@ -1,14 +1,12 @@
 ﻿#employeedropdown
 li {
     display: block;
-    transition-duration: 0.5s;
 }
 
 #employeedropdown
 ul li ul {
     visibility: hidden;
     opacity: 0;
-    transition: all 0.5s ease;
     left: 0;
     display: none;
 }
@@ -50,12 +48,12 @@ li {
     float: left;
     padding: 0.25rem;
     text-decoration: none;
-    transition-duration: 0.5s;
 }
 
     #employeedropdown
     li a {
         color: white;
+        width: 250px
     }
 
  
@@ -88,8 +86,8 @@ ul li ul li {
 
 
 .navigation {
-    width: 500px;
     position: relative;
+    width: 500px;
 }
 
 .float-left {

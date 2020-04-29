@@ -24,6 +24,10 @@ namespace PerformanceAPI.Models
 		public string DateOfProjection { get; set; }
 		public string ProjectedSalaryIncrease { get; set; }
 		public string ProjectedRating { get; set; }
+		public string ProjectionComments { get; set; }
 
 	}
+
+
+	
 }

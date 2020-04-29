@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using PerformanceAPI.Models;
 using PerformanceAPI.Gateway;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PerformanceAPI.Controllers
 {
@@ -73,8 +74,10 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Employee(int id)
         {
-            // pass in from index
-            id = 100004;
+            if (id.Equals(null))
+            {
+                return View("Employee");
+            }
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
             return View(empDetails);
@@ -130,9 +133,11 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Projections()
         {
-            List<ProjectionsModel> empDetails = _db.GetEmployeeDataForProjections().ToList();
+            List<EmployeeListProjectionsModel> empList = _db.GetEmployeesForProjections().ToList();
+            ViewBag.EmployeeList = new SelectList(empList, "EmployeeID", "LastName");
 
-            return View(empDetails);
+            return View();
+
         }
 
         public IActionResult Details()
@@ -142,7 +147,10 @@ namespace PerformanceAPI.Controllers
 
         public ActionResult EmployeeDetails(int id)
         {
-            
+            if (id.Equals(null))
+            {
+                return View("Projections");
+            }
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
             return View("Employee", empDetails);
@@ -151,7 +159,7 @@ namespace PerformanceAPI.Controllers
 
         public ActionResult PositionNames()
         {
-
+            
             List<PositionsModel> positions = _db.DisplayPositionInformation().ToList();
 
             return View("Projections", positions);
@@ -169,25 +177,39 @@ namespace PerformanceAPI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        /*
-        [HttpPost]
-        public IActionResult GetProjectionDetails()
+        
+        public ActionResult SaveProjection(EmployeeListProjectionsModel model)
         {
-            SaveProjectionDetailsModel umodel = new SaveProjectionDetailsModel();
-            //umodel.Name = HttpContext.Request.Form["txtName"].ToString();
-           // umodel.Age = Convert.ToInt32(HttpContext.Request.Form["txtAge"]);
-           //umodel.City = HttpContext.Request.Form["txtCity"].ToString();
-            int result = umodel.SaveProjectionDetails();
-            if (result > 0)
+
+            try
             {
-                ViewBag.Result = "Data Saved Successfully";
-            }
-            else
+                ProjectionsModel projection = new ProjectionsModel();
+                if (String.IsNullOrEmpty(model.comments))
+                {
+                    projection.ProjectionsComments = "No comments";
+                }
+                else
+                {
+                    projection.ProjectionsComments = model.comments;
+                }
+
+                projection.EmployeeID = model.EmployeeID;
+                projection.ProjectedPosition = model.projectedPosition;
+                projection.ProjectedSalaryIncrease = (Convert.ToDouble(model.projectedSalaryIncrease) / 100);
+                projection.ProjectedRating = model.projectedReview;
+
+                _db.AddProjectionsDataToProjectionsTable(projection);
+                return RedirectToAction("Projections");
+            } 
+            catch (Exception e)
             {
-                ViewBag.Result = "Something Went Wrong";
+                return RedirectToAction("Projections");
             }
-            return View("Projections");
-        }*/
+
+           
+
+
+        }
 
     }
 }
