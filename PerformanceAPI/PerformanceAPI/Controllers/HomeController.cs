@@ -17,28 +17,48 @@ namespace PerformanceAPI.Controllers
 
         private readonly ILogger<HomeController> _logger;
 
-        //test comment
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
         
-        public IActionResult Index(int Year)
+        public IActionResult Index()
         {
+            int year = Convert.ToInt32(CurrentUserModel.CurrentYear);
+
             //delete later
-            Year = 2020;
-            if (Year == 0)
-            {
-                return NotFound();
-            }
-            List<IndexModel> indModel = _db.GetDataForIndexModel(Year).ToList();
+            List<IndexModel> indModel = _db.GetDataForIndexModel(year).ToList();
             return View(indModel);
         }
 
         public IActionResult Login()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login([Bind] LoginModel user)
+        {
+            try
+            {
+                if (ModelState.IsValid) {
+                    CurrentUserModel.CurrentEmployeeID = Convert.ToInt32(user.UserID);
+
+                    _db.GetPositionIdForCurrentUser();
+                    _db.GetBudgetForCurrentUser();
+                    _db.GetSubordinatesForCurrentUser();
+
+                    CurrentUserModel.NumberOfEmployees = CurrentUserModel.ListOfSubordinates.Count;
+
+                    return RedirectToAction("Index");
+                }
+                return View();
+            }
+            catch
+            {
+                return View();
+            }
         }
 
         public IActionResult PerformanceReport()

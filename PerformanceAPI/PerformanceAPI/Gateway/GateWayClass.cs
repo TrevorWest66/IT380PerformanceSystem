@@ -41,8 +41,7 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					PredictionSummaryReportModel psrModel = new PredictionSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
-						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
 					{
 						psrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						psrModel.FirstName = dr["E_FIRST_NAME"].ToString();
@@ -89,8 +88,7 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
-						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
 					{
 						//instantiates a new model
 						EmployeeModel employeeModel = new EmployeeModel();
@@ -127,7 +125,7 @@ namespace PerformanceAPI.Gateway
 					CommandType = CommandType.StoredProcedure
 				};
 				cmd.Parameters.AddWithValue("@EmployeeID", id);
-				cmd.Parameters.AddWithValue("@CurrentYear", DateTime.Now.ToString("yyyy"));
+				cmd.Parameters.AddWithValue("@CurrentYear", CurrentUserModel.CurrentYear);
 				//opens the connection
 				con.Open();
 				//executes the stored procedure
@@ -350,8 +348,7 @@ namespace PerformanceAPI.Gateway
 					//instantiates a new model
 					ActualsSummaryReportModel asrModel = new ActualsSummaryReportModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.AcceptableSupervisorIds.Contains(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()))
-						|| CurrentUserModel.CurrentEmployeeID.Equals(Convert.ToInt32(dr["SUPERVISOR_ID"].ToString())))
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
 					{
 						asrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						asrModel.EmployeeFirstname = dr["E_FIRST_NAME"].ToString();
@@ -445,23 +442,25 @@ namespace PerformanceAPI.Gateway
 				//creates the model projects for each row and adds them to the list
 				while (dr.Read())
 				{
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						//instantiates a new model
+						IndexModel indModel = new IndexModel();
 
-					//instantiates a new model
-					IndexModel indModel = new IndexModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
+						indModel.FirstName = dr["E_FIRST_NAME"].ToString();
+						indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
+						indModel.LastName = dr["E_LAST_NAME"].ToString();
+						indModel.PositionName = dr["POSITION_NAME"].ToString();
+						indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
+						indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
+						indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+						indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+						indModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
 
-					//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
-					indModel.FirstName = dr["E_FIRST_NAME"].ToString();
-					indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
-					indModel.LastName = dr["E_LAST_NAME"].ToString();
-					indModel.PositionName = dr["POSITION_NAME"].ToString();
-					indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
-					indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
-					indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
-					indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
-					indModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
-
-					//adds the model with the records data in it to the list
-					indexModelList.Add(indModel);
+						//adds the model with the records data in it to the list
+						indexModelList.Add(indModel);
+					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -469,6 +468,99 @@ namespace PerformanceAPI.Gateway
 			//returns the list of models
 			return indexModelList;
 		}
+
+		public void GetBudgetForCurrentUser()
+		{
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetCurrentBudget", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				cmd.Parameters.AddWithValue("@EmployeeID", CurrentUserModel.CurrentEmployeeID);
+				cmd.Parameters.AddWithValue("@Year", CurrentUserModel.CurrentYear);
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					CurrentUserModel.CurrentBudge = Convert.ToDouble(dr["BUDGET"].ToString());
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+		}
+
+		public void GetSubordinatesForCurrentUser()
+		{
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetUsersSubordinates", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//set the params
+				cmd.Parameters.AddWithValue("@CurrentUser", CurrentUserModel.CurrentEmployeeID);
+				cmd.Parameters.AddWithValue("@CurrentPositionID", CurrentUserModel.UserPositionID);
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					CurrentUserModel.ListOfSubordinates.Add(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString()));
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+		}
+
+		public void GetPositionIdForCurrentUser()
+		{
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetUserPositionID", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//set the params
+				cmd.Parameters.AddWithValue("@EmployeeID", CurrentUserModel.CurrentEmployeeID);
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					CurrentUserModel.UserPositionID = Convert.ToInt32(dr["POSITION_ID"].ToString());
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+		}
+
 		//next method for a stored procedure goes here
+
 	}
 }

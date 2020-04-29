@@ -8,21 +8,24 @@ namespace PerformanceAPI.Models
 {
 	public static class CurrentUserModel
 	{
-		public static int CurrentEmployeeID = 100002;
-		public static int CurrentBudge = 1100000;
-		public static int CurrentBudgetUsed;
+		// Set on Login
+		public static int CurrentEmployeeID;
+		public static int UserPositionID;
+		public static string CurrentYear = DateTime.Now.ToString("yyyy");
+		public static double CurrentBudge;
+		public static List<int> ListOfSubordinates = new List<int>();
+		public static int NumberOfEmployees;
+
+		// Set in index page
+		public static double OverBudgetAmount;
+		public static bool CurrentReportYear;
+		public static double CurrentBudgetUsed;
 		public static int NumberOfEmployeesWithProjections;
 		public static int NumberOfEmployeesWithActuals;
-		public static int NumberOfEmployees = 15;
-		public static int[] AcceptableSupervisorIds = { 100004, 100005 };
-		public static int OverBudgetAmount;
-
-		//don't worry about this it is set in the reports page
-		public static bool CurrentReportYear;
 
 		public static string GetFormattedOverBudgetAmount()
 		{
-			string formattedAmount = "$" + Math.Abs(OverBudgetAmount).ToString("N");
+			string formattedAmount = Math.Abs(OverBudgetAmount).ToString("C");
 			return formattedAmount;
 		}
 	}
