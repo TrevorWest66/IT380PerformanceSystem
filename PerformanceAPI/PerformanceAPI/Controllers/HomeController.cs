@@ -64,7 +64,10 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult SalaryInformation()
         {
-            return View();
+
+            var together = (_db.DisplayTargetIncrease() ?? Enumerable.Empty<PositionsModel>()).Concat(_db.DisplayRangeInformation() ?? Enumerable.Empty<PositionsModel>()).ToList();
+            return View(together);
+
         }
 
         public IActionResult Employee(int id)

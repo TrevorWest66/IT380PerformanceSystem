@@ -1,0 +1,12 @@
+.divLeftBorder {
+    border-left: 1px solid black;
+}
+
+.divBorderNoTop {
+    border: 1px solid black;
+    border-top: none;
+}
+
+.bgGrey {
+    background: #DADADA !important;
+}
