@@ -42,6 +42,46 @@
         <div class="box" id="employee-tree">
             <h2>Employees</h2>
             <ul id="EmployeeTree">
+                @foreach (var item in Model)
+                {
+                    if (item.SupervisorID == CurrentUserModel.CurrentEmployeeID)
+                    {
+                        <li> @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</li>
+
+                        @foreach (var i2 in item.etvModelList)
+                        {
+                            if (i2.SupervisorID == item.EmployeeID)
+                            {
+                                <li> @Html.DisplayFor(modelItem => i2.EmployeeFirstName) @Html.DisplayFor(modelItem => i2.EmployeeLastName)</li>
+
+                                @foreach (var i3 in item.etvModelList)
+                                {
+                                    if (i3.SupervisorID == i2.EmployeeID)
+                                    {
+                                        <li> @Html.DisplayFor(modelItem => i3.EmployeeFirstName) @Html.DisplayFor(modelItem => i3.EmployeeFirstName)</li>
+                                        @foreach (var i4 in item.etvModelList)
+                                        {
+                                            if (i4.SupervisorID == i3.EmployeeID)
+                                            {
+                                                <li> @Html.DisplayFor(modelItem => i4.EmployeeFirstName) @Html.DisplayFor(modelItem => i4.EmployeeFirstName)</li>
+                                                @foreach (var i5 in item.etvModelList)
+                                                {
+                                                    if (i5.SupervisorID == i4.EmployeeID)
+                                                    {
+                                                        <li> @Html.DisplayFor(modelItem => i5.EmployeeFirstName) @Html.DisplayFor(modelItem => i5.EmployeeFirstName)</li>
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                }
                 <li>
                     <span class="caret">Employees</span>
                     <ul class="nested">
@@ -129,9 +169,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.ActualSalary)
                         </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Supervisor)
-                        </th>
+                        
                     </tr>
                 </thead>
                 <tbody>
@@ -162,9 +200,7 @@
                             <td>
                                 @Html.DisplayFor(model => item.ActualSalary)
                             </td>
-                            <td>
-                                @Html.DisplayFor(model => item.Supervisor)
-                            </td>
+                            
 
                         </tr>
                     }

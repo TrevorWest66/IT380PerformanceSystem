@@ -7,6 +7,7 @@ namespace PerformanceAPI.Models
 {
     public class IndexModel
     {
+        public int EmployeeID { get; set; }
         public string FirstName { get; set; }
         public string MiddleInitial { get; set; }
         public string LastName { get; set; }
@@ -15,8 +16,15 @@ namespace PerformanceAPI.Models
         public string ActualRating { get; set; }
         public double PredictionSalary { get; set; }
         public double ActualSalary { get; set; }
-        public int Supervisor { get; set; }
-    
+        public string DateOfProjection { get; set; }
+        public string DateOfActuals { get; set; }
+        public string PerformanceReview { get; set; }
+        public int SupervisorID { get; set; }
+
+
+
+        public List<EmployeeTreeViewModel> etvModelList { get; set; }
+
 
         //derived attributes
         public bool PredictionActualized;

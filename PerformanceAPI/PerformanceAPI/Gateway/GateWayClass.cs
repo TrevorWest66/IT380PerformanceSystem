@@ -472,25 +472,58 @@ namespace PerformanceAPI.Gateway
 				//creates the model projects for each row and adds them to the list
 				while (dr.Read())
 				{
+
 					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
 					{
 						//instantiates a new model
 						IndexModel indModel = new IndexModel();
+						
+						//if date of projecion does not equal to 2020
+						if (!(dr["DATE_OF_PROJECTION"].ToString().Contains (CurrentUserModel.CurrentYear)))
+						{
 
-						//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
-						indModel.FirstName = dr["E_FIRST_NAME"].ToString();
-						indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
-						indModel.LastName = dr["E_LAST_NAME"].ToString();
-						indModel.PositionName = dr["POSITION_NAME"].ToString();
-						indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
-						indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
-						indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
-						indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
-						indModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+							indModel.DateOfProjection = "";
+							indModel.PredictionRating = "";
+							indModel.PredictionSalary = 0;;
+						} 
+						else
+						{
+							//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
+							indModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
+							indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
+							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+						}
+
+						//if date of projecion does not equal to 2020
+						if (!(dr["DATE_OF_REVIEW"].ToString().Contains(CurrentUserModel.CurrentYear)))
+						{
+							indModel.DateOfActuals = "";
+							indModel.ActualRating = "";
+							indModel.ActualSalary = 0;
+						}
+						else
+						{
+							//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+							indModel.DateOfActuals = dr["DATE_OF_REVIEW"].ToString();
+							indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
+							indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+						}
+
+							indModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+							indModel.FirstName = dr["E_FIRST_NAME"].ToString();
+							indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
+							indModel.LastName = dr["E_LAST_NAME"].ToString();
+							indModel.PositionName = dr["POSITION_NAME"].ToString();
+							indModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+
+
+
+						indModel.etvModelList = GetDataForEmployeeTreeView().ToList();
 
 						//adds the model with the records data in it to the list
 						indexModelList.Add(indModel);
 					}
+
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -659,7 +692,50 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
-		//next method for a stored procedure goes here
+		public IEnumerable<EmployeeTreeViewModel> GetDataForEmployeeTreeView()
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<EmployeeTreeViewModel> etvModelList = new List<EmployeeTreeViewModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetEmpTreeView", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						//instantiates a new model
+						EmployeeTreeViewModel etvModel = new EmployeeTreeViewModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						etvModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+						etvModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+						etvModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						etvModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+
+
+						//adds the model with the records data in it to the list
+						etvModelList.Add(etvModel);
+					}
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return etvModelList;
+			;
+		}
 
 	}
 }
