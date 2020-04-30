@@ -1,7 +1,68 @@
-﻿
+﻿@model PerformanceAPI.Models.LoginModel
+
 @{
     ViewData["Title"] = "Login";
 }
 
-<h1>Login</h1>
+@{
+    Layout = null;
+}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PerformanceAPI</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+	<div class="container-fluid" style="height: 100vh">
+
+		<div class="row" style="height: inherit">
+
+			<div class="col-8 d-flex justify-content-center align-items-center" style="background-color: gray">
+				<img src="~/Images/federated.jpg" style="height: 40%; width: 40%" />
+			</div>
+
+			<div class="col-4 d-flex justify-content-center align-items-center" style="background-color: maroon">
+				<div class="flex-column " style="background-color: white; padding: 30px; border-radius: 5px">
+						<h1>Login</h1>
+						<form asp-action="Login" method="post">
+							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+							<div class="form-check">
+								<input asp-for="UserID" value="100000" class="form-check-input form-control-lg" type="radio" name="UserID" id="CIORadio" />
+								<label for="CIORadio" , class="form-check-label form-control-lg">CIO Login</label>
+							</div>
+							<div class="form-check">
+								<input asp-for="UserID" value="100001" class="form-check-input form-control-lg" type="radio" name="UserID" id="DirectorRadio" />
+								<label for="DirectorRadio" , class="form-check-label form-control-lg">Director Login</label>
+							</div>
+							<div class="form-check">
+								<input asp-for="UserID" value="100002" class="form-check-input form-control-lg" type="radio" name="UserID" id="ISManagerRadio" />
+								<label for="ISManagerRadio" , class="form-check-label form-control-lg">IS Manager Login</label>
+							</div>
+							<div class="form-check">
+								<input asp-for="UserID" value="100004" class="form-check-input form-control-lg" type="radio" name="UserID" id="SupervisorRadio" />
+								<label for="SupervisorRadio" , class="form-check-label form-control-lg">Supervisor Login</label>
+							</div>
+							<div class="form-group">
+								<span asp-validation-for="UserID" class="text-danger"></span>
+								<input type="submit" value="Sign In" class="btn btn-dark" />
+							</div>
+						</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@section Scripts {
+		@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	}
+
+</body>
+</html>

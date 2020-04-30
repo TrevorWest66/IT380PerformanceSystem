@@ -1,48 +1,181 @@
-﻿@{
+﻿@model IEnumerable<PerformanceAPI.Models.IndexModel>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<h1 class="display-4">Employees</h1>
-<div class="text-center">
-    <div class="box" id="employee-tree">
-        <h3>List Of Employees</h3>
-        <ul id="EmployeeTree">
-            <li>
-                <span class="caret">Employees</span>
-                <ul class="nested">
-                    <li>
-                        <span class="caret">Jim Jordans</span>
-                        <ul class="nested">
-                            <li><a>Jim Jeffries</a></li>
-                            <li>Jordan Henry</li>
-                            <li>Kim Johnson</li>
-                            <li>Megan Scott</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <span class="caret">Andy Duframe</span>
-                        <ul class="nested">
-                            <li>Jim Jeffries</li>
-                            <li>Jordan Henry</li>
-                            <li>Kim Johnson</li>
-                            <li>Megan Scott</li>
-                        </ul>
-                    </li>
-                    <li>
-                        <span class="caret">Jessica Heartman</span>
-                        <ul class="nested">
-                            <li>Tom Hardy</li>
-                            <li>Katie White</li>
-                            <li>Tamora Pierce</li>
-                            <li>James Frederick</li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+    <h1> Home </h1>
+
+@{
+    double usedBudget = 0;
+    double usedBudgetActual = 0;
+    int employeesWithProjections = 0;
+    int employeesWithActuals = 0;
+    foreach (var item in Model)
+    {
+        usedBudget += (item.ActualSalary * (item.PredictionSalary + 1));
+        employeesWithProjections++;
+
+        usedBudgetActual += item.ActualSalary;
+        employeesWithActuals++;
+    }
+
+    CurrentUserModel.CurrentBudgetUsed = Convert.ToDouble(usedBudget);
+    CurrentUserModel.NumberOfEmployeesWithProjections = employeesWithProjections;
+    CurrentUserModel.NumberOfEmployeesWithActuals = employeesWithActuals;
+
+    @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
+    {
+        CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
+    }
+}
+<p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
+<p class="hidden-data" id="used-budget">@CurrentUserModel.CurrentBudgetUsed</p>
+<p class="hidden-data" id="employees-done">@CurrentUserModel.NumberOfEmployeesWithProjections</p>
+<p class="hidden-data" id="employees-done">@CurrentUserModel.NumberOfEmployeesWithActuals</p>
+<p class="hidden-data" id="employees-total">@CurrentUserModel.NumberOfEmployees</p>
+
+
+<section class="container">
+
+    <div class="text-center">
+        <div class="box" id="employee-tree">
+            <h2>Employees</h2>
+            <ul id="EmployeeTree">
+                <li>
+                    <span class="caret">Employees</span>
+                    <ul class="nested">
+                        <li>
+                            <span class="caret">Jim Jordans</span>
+                            <ul class="nested">
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="caret">Andy Duframe</span>
+                            <ul class="nested">
+                                <li>Jim Jeffries</li>
+                                <li>Jordan Henry</li>
+                                <li>Kim Johnson</li>
+                                <li>Megan Scott</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="caret">Jessica Heartman</span>
+                            <ul class="nested">
+                                <li>Tom Hardy</li>
+                                <li>Katie White</li>
+                                <li>Tamora Pierce</li>
+                                <li>James Frederick</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
     </div>
-    <div class="box" id="employee-information">
-        <h3>General Information</h3>
+
+    <div class="rightPane">
+        <div class="pieChartDiv">
+
+            <table id="predictions-report-charts">
+                <tr>
+                    <td>
+                        @if (CurrentUserModel.OverBudgetAmount < 0)
+                        {
+                            <h3>You are overbudget by:</h3>
+                            <h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
+                        }
+                        else
+                        {
+                            <div id="budget-chart"></div>
+                        }
+
+                    </td>
+                    <td><div id="projections-chart"></div></td>
+
+                    <td><div id="actuals-chart"></div></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="tableDiv">
+            <table class=" table table-bordered table-striped">   
+                <thead class=" thead-dark">
+                    <!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FirstName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.MiddleInitial)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.LastName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PositionName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PredictionRating)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ActualRating)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PredictionSalary)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ActualSalary)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Supervisor)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(model => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.MiddleInitial)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.PositionName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.PredictionRating)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.ActualRating)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.PredictionSalary)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.ActualSalary)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.Supervisor)
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-<div class="clr"></div>
+
+
+</section>
+
+<script src="~/js/BudgetPirChart.js"></script>
+<script src="~/js/ProjectionsDoneChart.js"></script>
+<script src="~/js/ActualsDoneChart.js"></script>

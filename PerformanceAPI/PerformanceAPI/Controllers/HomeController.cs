@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PerformanceAPI.Models;
 using PerformanceAPI.Gateway;
+using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace PerformanceAPI.Controllers
 {
@@ -16,8 +18,6 @@ namespace PerformanceAPI.Controllers
 
         private readonly ILogger<HomeController> _logger;
 
-        //test comment
-
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -25,7 +25,11 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            int year = Convert.ToInt32(CurrentUserModel.CurrentYear);
+
+            //delete later
+            List<IndexModel> indModel = _db.GetDataForIndexModel(year).ToList();
+            return View(indModel);
         }
 
         public IActionResult Login()
@@ -33,22 +37,63 @@ namespace PerformanceAPI.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login([Bind] LoginModel user)
+        {
+            try
+            {
+                if (ModelState.IsValid) {
+                    CurrentUserModel.CurrentEmployeeID = Convert.ToInt32(user.UserID);
+
+                    _db.GetPositionIdForCurrentUser();
+                    _db.GetBudgetForCurrentUser();
+                    _db.GetSubordinatesForCurrentUser();
+
+                    CurrentUserModel.NumberOfEmployees = CurrentUserModel.ListOfSubordinates.Count;
+
+                    return RedirectToAction("Index");
+                }
+                return View();
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public IActionResult PerformanceReport()
+        {
+            return View();
+        }
 
         public IActionResult SalaryInformation()
         {
             return View();
         }
 
-        public IActionResult Employee()
+        public IActionResult Employee(int id)
         {
-            List<EmployeeModel> empModel = _db.GetDataForEmployeeNameDropDown().ToList();
-            return View(empModel);
+            if (id.Equals(null))
+            {
+                return View("Employee");
+            }
+            List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
+
+            return View(empDetails);
         }
 
         public IActionResult PredictionSummaryReport(int Year)
         {
-            //delete later
-            Year = 2020;
+            if (Year == 2020)
+            {
+                CurrentUserModel.CurrentReportYear = true;
+            }
+            else
+            {
+                CurrentUserModel.CurrentReportYear = false;
+            }
+
             if (Year == 0)
             {
                 return NotFound();
@@ -64,8 +109,15 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult ActualsSummaryReport(int Year)
         {
-            // delete this later
-            Year = 2020;
+            if(Year == 2020)
+            {
+                CurrentUserModel.CurrentReportYear = true;
+            }
+            else
+            {
+                CurrentUserModel.CurrentReportYear = false;
+            }
+
             if (Year == 0)
             {
                 return NotFound();
@@ -81,7 +133,11 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult Projections()
         {
+            List<EmployeeListProjectionsModel> empList = _db.GetEmployeesForProjections().ToList();
+            ViewBag.EmployeeList = new SelectList(empList, "EmployeeID", "LastName");
+
             return View();
+
         }
 
         public IActionResult Details()
@@ -91,16 +147,29 @@ namespace PerformanceAPI.Controllers
 
         public ActionResult EmployeeDetails(int id)
         {
-            Console.WriteLine(id.ToString());
-            if (id == 0)
+            if (id.Equals(null))
             {
-                return NotFound();
+                return View("Projections");
             }
             List<EmployeeDetailsModel> empDetails = _db.DisplayAnEmployeesData(id).ToList();
 
-            Console.WriteLine("In for loop of actionresult");
-            ViewBag.PartialStyle = "display: none";
-            return View("_EmployeePartial", empDetails);
+            return View("Employee", empDetails);
+
+        }
+
+        public ActionResult PositionNames()
+        {
+            
+            List<PositionsModel> positions = _db.DisplayPositionInformation().ToList();
+
+            return View("Projections", positions);
+
+        }
+
+        public IActionResult ReportsHistory()
+        {
+            List<ReportsHistoryModel> reports = _db.GetDataForReportsHistoryModel().ToList();
+            return View(reports);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -108,14 +177,56 @@ namespace PerformanceAPI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        public IActionResult PerformanceReport()
+
+        public ActionResult SaveProjection(EmployeeListProjectionsModel model)
         {
-            List<PerformanceReviewModel> qsrModel = _db.GetDataForPerformanceReviewPage().ToList();
-            return View(qsrModel);
+
+            try
+            {
+                ProjectionsModel projection = new ProjectionsModel();
+                if (String.IsNullOrEmpty(model.comments))
+                {
+                    projection.ProjectionsComments = "No comments";
+                }
+                else
+                {
+                    projection.ProjectionsComments = model.comments;
+                }
+
+                projection.EmployeeID = model.EmployeeID;
+                projection.ProjectedPosition = model.projectedPosition;
+                projection.ProjectedSalaryIncrease = (Convert.ToDouble(model.projectedSalaryIncrease) / 100);
+                projection.ProjectedRating = model.projectedReview;
+
+                _db.AddProjectionsDataToProjectionsTable(projection);
+                return RedirectToAction("Projections");
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("Projections");
+            }
         }
+
+            public IActionResult EditProjection(int id)
+            {
+                {
+                    if (id == 0)
+                    {
+                        return NotFound();
+                    }
+
+                    ProjectionsModel projection = _db.GetMostRecentProjectionForAnEmployee(id);
+                    if (projection == null)
+                    {
+                        return NotFound();
+                    }
+                    return View(projection);
+                }
+            }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PerformanceReport(int id, [Bind] PerformanceReviewModel performanceReview)
+        public ActionResult EditProjection(int id, [Bind] ProjectionsModel projection)
         {
             try
             {
@@ -126,9 +237,9 @@ namespace PerformanceAPI.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    performanceReview.EmployeeID = id;
-                    _db.InsertPerformanceReview(performanceReview);
-
+                    projection.EmployeeID = id;
+                    _db.UpdateProjectionByID(projection);
+                    return RedirectToAction("PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear)});
                 }
                 return View(_db);
             }
@@ -137,6 +248,7 @@ namespace PerformanceAPI.Controllers
                 return View();
             }
         }
-    }
-}
 
+    }
+
+}

@@ -1,0 +1,27 @@
+﻿@model IEnumerable<PerformanceAPI.Models.PositionsModel>
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+<link rel="stylesheet" href="~/css/PositionTable.css"/>
+<table class="table table-striped table-bordered">
+    <tr class="positiontableheader">
+        <td>
+            Position Name
+        </td>
+        <td>
+            Salary Bounds
+        </td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.PositionName) </td>
+            <td>  $@Html.DisplayFor(modelItem => item.SalaryLowerBound) - $@Html.DisplayFor(modelItem => item.SalaryUpperBound)</td>
+        </tr>   
+    }
+</table>
+
+
+<div>
+    <br />
+</div>
