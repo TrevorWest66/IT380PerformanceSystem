@@ -484,9 +484,7 @@ namespace PerformanceAPI.Gateway
 						indModel.PositionName = dr["POSITION_NAME"].ToString();
 						indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
 						indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
-						indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
 						indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
-						indModel.Supervisor = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
 
 						//adds the model with the records data in it to the list
 						indexModelList.Add(indModel);
