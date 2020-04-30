@@ -1,12 +1,9 @@
 @model IEnumerable<PerformanceAPI.Models.PositionsModel>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Salary Information";
 }
 <link href="~/css/salaryinformation.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="~/js/ComparisonChart.js"></script>
 <script src="~/js/BudgetPirChart.js"></script>
 @{
     double usedBudget = CurrentUserModel.CurrentBudgetUsed;
