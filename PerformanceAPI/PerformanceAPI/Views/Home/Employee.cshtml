@@ -14,6 +14,7 @@
 <table class="table table-striped table-bordered">
     @foreach (var item in Model)
     {
+        
         <thead class="thead-dark">
             <tr>
                 <th>Employee Details</th>
@@ -72,6 +73,11 @@
             <tr>
                 <td>Projection Comments</td>
                 <td>@Html.DisplayFor(modelItem => item.ProjectionComments)</td>
+            </tr>
+            <tr>
+                <td class="maroon-link">
+                    @Html.ActionLink("New Performance Review", "PerformanceReview", new { id = item.EmployeeID })
+                </td>
             </tr>
         </tbody>
     }

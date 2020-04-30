@@ -62,11 +62,6 @@ namespace PerformanceAPI.Controllers
             }
         }
 
-        public IActionResult PerformanceReport()
-        {
-            return View();
-        }
-
         public IActionResult SalaryInformation()
         {
             return View();
@@ -226,7 +221,7 @@ namespace PerformanceAPI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditProjection(int id, [Bind] ProjectionsModel projection)
+        public IActionResult EditProjection(int id, [Bind] ProjectionsModel projection)
         {
             try
             {
@@ -241,6 +236,46 @@ namespace PerformanceAPI.Controllers
                     _db.UpdateProjectionByID(projection);
                     return RedirectToAction("PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear)});
                 }
+                return View(_db);
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public IActionResult PerformanceReview(int id)
+        {
+            {
+                PerformanceReviewModel prModel = _db.GetDataForPerformanceReviewPage(id);
+                prModel.ReviewDate = DateTime.Now.ToString();
+                prModel.ReviewPeriod = "01-01-" + CurrentUserModel.CurrentYear + "-01-01-" + CurrentUserModel.CurrentYear;
+                return View(prModel);
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PerformanceReview(int id, [Bind] PerformanceReviewModel prReview)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    prReview.EmployeeID = id;
+                    if (prReview.PrLastRating is null)
+                    {
+                        prReview.PrLastRating = "--";
+                    }
+                    _db.InsertPerformanceReview(prReview);
+                    return RedirectToAction("Index");
+                }
+                prReview.EmployeeID = id;
                 return View(_db);
             }
             catch
