@@ -38,176 +38,159 @@
 
 <section class="container">
 
-    <div class="text-center">
-        <div class="box" id="employee-tree">
-            <h2>Employees</h2>
-            <ul id="EmployeeTree">
-                @foreach (var item in Model)
-                {
-                    if (item.SupervisorID == CurrentUserModel.CurrentEmployeeID)
-                    {
-                        <li> @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</li>
+	<div class="text-center">
+		<div class="box" id="employee-tree">
+			<h2>Employees</h2>
+			<ul id="EmployeeTree">
+				<li>
+					@foreach (var item in Model)
+					{
+						if (item.SupervisorID == CurrentUserModel.CurrentEmployeeID)
+						{
+							<span class="maroon-link"> @Html.ActionLink(item.FirstName + item.LastName, "Employee", new { id = item.EmployeeID })</span>
+							<ul>
+								<li>
+									@foreach (var i2 in item.etvModelList)
+									{
+										if (i2.SupervisorID == item.EmployeeID)
+										{
+											<span class="maroon-link">@Html.ActionLink(i2.EmployeeFirstName + i2.EmployeeLastName, "Employee", new { id = i2.EmployeeID })</span>
+											<ul>
+												<li>
+													@foreach (var i3 in item.etvModelList)
+													{
+														if (i3.SupervisorID == i2.EmployeeID)
+														{
+															<span class="maroon-link"> @Html.ActionLink(i3.EmployeeFirstName + i3.EmployeeLastName, "Employee", new { id = i3.EmployeeID })</span>
+															<ul>
+																<li>
+																	@foreach (var i4 in item.etvModelList)
+																	{
+																		if (i4.SupervisorID == i3.EmployeeID)
+																		{
+																			<span class="maroon-link"> @Html.ActionLink(i4.EmployeeFirstName + i4.EmployeeLastName, "Employee", new { id = i4.EmployeeID })</span>
+																			<ul>
+																				<li>
+																					@foreach (var i5 in item.etvModelList)
+																					{
+																						if (i5.SupervisorID == i4.EmployeeID)
+																						{
+																							<span class="maroon-link"> @Html.ActionLink(i5.EmployeeFirstName + i5.EmployeeLastName, "Employee", new { id = i5.EmployeeID })</span>
+																						}
+																					}
+																				</li>
+																			</ul>
+																		}
+																	}
+																</li>
+															</ul>
+														}
+													}
+												</li>
+											</ul>
+										}
+									}
+								</li>
+							</ul>
+						}
+					}
+			</ul>
+		</div>
+	</div>
 
-                        @foreach (var i2 in item.etvModelList)
-                        {
-                            if (i2.SupervisorID == item.EmployeeID)
-                            {
-                                <li> @Html.DisplayFor(modelItem => i2.EmployeeFirstName) @Html.DisplayFor(modelItem => i2.EmployeeLastName)</li>
+	<div class="rightPane">
+		<div class="pieChartDiv">
 
-                                @foreach (var i3 in item.etvModelList)
-                                {
-                                    if (i3.SupervisorID == i2.EmployeeID)
-                                    {
-                                        <li> @Html.DisplayFor(modelItem => i3.EmployeeFirstName) @Html.DisplayFor(modelItem => i3.EmployeeFirstName)</li>
-                                        @foreach (var i4 in item.etvModelList)
-                                        {
-                                            if (i4.SupervisorID == i3.EmployeeID)
-                                            {
-                                                <li> @Html.DisplayFor(modelItem => i4.EmployeeFirstName) @Html.DisplayFor(modelItem => i4.EmployeeFirstName)</li>
-                                                @foreach (var i5 in item.etvModelList)
-                                                {
-                                                    if (i5.SupervisorID == i4.EmployeeID)
-                                                    {
-                                                        <li> @Html.DisplayFor(modelItem => i5.EmployeeFirstName) @Html.DisplayFor(modelItem => i5.EmployeeFirstName)</li>
-                                                    }
-                                                }
-                                            }
+			<table id="predictions-report-charts">
+				<tr>
+					<td>
+						@if (CurrentUserModel.OverBudgetAmount < 0)
+						{
+							<h3>You are overbudget by:</h3>
+							<h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
+						}
+						else
+						{
+							<div id="budget-chart"></div>
+						}
 
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+					</td>
+					<td><div id="projections-chart"></div></td>
 
-
-                }
-                <li>
-                    <span class="caret">Employees</span>
-                    <ul class="nested">
-                        <li>
-                            <span class="caret">Jim Jordans</span>
-                            <ul class="nested">
-                            </ul>
-                        </li>
-                        <li>
-                            <span class="caret">Andy Duframe</span>
-                            <ul class="nested">
-                                <li>Jim Jeffries</li>
-                                <li>Jordan Henry</li>
-                                <li>Kim Johnson</li>
-                                <li>Megan Scott</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <span class="caret">Jessica Heartman</span>
-                            <ul class="nested">
-                                <li>Tom Hardy</li>
-                                <li>Katie White</li>
-                                <li>Tamora Pierce</li>
-                                <li>James Frederick</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-
-    </div>
-
-    <div class="rightPane">
-        <div class="pieChartDiv">
-
-            <table id="predictions-report-charts">
-                <tr>
-                    <td>
-                        @if (CurrentUserModel.OverBudgetAmount < 0)
-                        {
-                            <h3>You are overbudget by:</h3>
-                            <h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
-                        }
-                        else
-                        {
-                            <div id="budget-chart"></div>
-                        }
-
-                    </td>
-                    <td><div id="projections-chart"></div></td>
-
-                    <td><div id="actuals-chart"></div></td>
-                </tr>
-            </table>
-        </div>
+					<td><div id="actuals-chart"></div></td>
+				</tr>
+			</table>
+		</div>
 
 
-        <div class="tableDiv">
-            <table class=" table table-bordered table-striped">   
-                <thead class=" thead-dark">
-                    <!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
-                    <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.FirstName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.MiddleInitial)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.LastName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.PositionName)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.PredictionRating)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ActualRating)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.PredictionSalary)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.ActualSalary)
-                        </th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                @Html.DisplayFor(model => item.FirstName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.MiddleInitial)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.LastName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.PositionName)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.PredictionRating)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.ActualRating)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.PredictionSalary)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => item.ActualSalary)
-                            </td>
-                            
+		<div class="tableDiv">
+			<table class=" table table-bordered table-striped">
+				<thead class=" thead-dark">
+					<!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
+					<tr>
+						<th>
+							@Html.DisplayNameFor(model => model.FirstName)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.MiddleInitial)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.LastName)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.PositionName)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.PredictionRating)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.ActualRating)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.PredictionSalary)
+						</th>
+						<th>
+							@Html.DisplayNameFor(model => model.ActualSalary)
+						</th>
 
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model)
+					{
+						<tr>
+							<td>
+								@Html.DisplayFor(model => item.FirstName)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.MiddleInitial)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.LastName)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.PositionName)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.PredictionRating)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.ActualRating)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.PredictionSalary)
+							</td>
+							<td>
+								@Html.DisplayFor(model => item.ActualSalary)
+							</td>
+
+
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
 
 
 </section>

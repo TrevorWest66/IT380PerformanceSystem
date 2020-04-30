@@ -445,6 +445,50 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
+		public IEnumerable<EmployeeTreeViewModel> GetDataForEmpTree()
+		{
+			// makes a list to store each record from the database whihc are loaded into the model
+			List<EmployeeTreeViewModel> empTreeList = new List<EmployeeTreeViewModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetEmpTreeView", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					EmployeeTreeViewModel emp = new EmployeeTreeViewModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						emp.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						emp.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+						emp.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+						emp.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+
+						//adds the model with the records data in it to the list
+						empTreeList.Add(emp);
+					}
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return empTreeList;
+		}
+
 		//This will call the stored procedure for thr Index model
 		public IEnumerable<IndexModel> GetDataForIndexModel(int Year)
 		{
@@ -518,7 +562,7 @@ namespace PerformanceAPI.Gateway
 
 
 
-						indModel.etvModelList = GetDataForEmployeeTreeView().ToList();
+						indModel.etvModelList = GetDataForEmpTree().ToList();
 
 						//adds the model with the records data in it to the list
 						indexModelList.Add(indModel);
