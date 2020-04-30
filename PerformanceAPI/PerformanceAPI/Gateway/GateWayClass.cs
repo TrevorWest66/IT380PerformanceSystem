@@ -692,10 +692,85 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
-		public IEnumerable<EmployeeTreeViewModel> GetDataForEmployeeTreeView()
+		//next method for a stored procedure goes here
+		public PerformanceReviewModel GetDataForPerformanceReviewPage(int id)
+
+		{
+			PerformanceReviewModel qsrModel = new PerformanceReviewModel();
+
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				SqlCommand cmd = new SqlCommand("GetDataForPerformanceReviewPage", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				cmd.Parameters.AddWithValue("@EmployeeID", id);
+				
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					qsrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+					qsrModel.FirstName = dr["E_FIRST_NAME"].ToString();
+					qsrModel.LastName = dr["E_LAST_NAME"].ToString();
+					qsrModel.ReviewDate = dr["DATE_OF_REVIEW"].ToString();
+					qsrModel.Supervisor = dr["SUPERVISOR_ID"].ToString();
+					qsrModel.ReviewPeriod = dr["PR_REVIEW_PERIOD"].ToString();
+					qsrModel.PerformanceRatingID = dr["PR_PROJECTION"].ToString();
+					qsrModel.PrLastRating = dr["PR_LAST_RATING"].ToString();
+					qsrModel.EmployeePosition = dr["PR_POSITION"].ToString();
+					qsrModel.Department = dr["PR_DEPARTMENT"].ToString();
+					qsrModel.DateOfNextReview = dr["PR_DATE_OF_NEXT_REVIEW"].ToString();
+					qsrModel.Promotion = dr["PROJECTED_POSITION"].ToString();
+					qsrModel.PayIncrease = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					qsrModel.Comments = dr["PR_COMMENTS"].ToString();
+					
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return qsrModel;
+		}
+	
+		public void InsertPerformanceReview(PerformanceReviewModel performanceReview)
+		{
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{ 
+				SqlCommand cmd = new SqlCommand("InsertPerformanceReview", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				cmd.Parameters.AddWithValue("@EmployeeID", performanceReview.EmployeeID);
+				cmd.Parameters.AddWithValue("@ReviewDate", performanceReview.ReviewDate);
+				cmd.Parameters.AddWithValue("@Supervisor", performanceReview.Supervisor);
+				cmd.Parameters.AddWithValue("@ReviewPeriod", performanceReview.ReviewPeriod);
+				cmd.Parameters.AddWithValue("@PerformanceRatingID", performanceReview.PerformanceRatingID);
+				cmd.Parameters.AddWithValue("@PrRatingLast", performanceReview.PrLastRating);
+				cmd.Parameters.AddWithValue("@Position", performanceReview.EmployeePosition);
+				cmd.Parameters.AddWithValue("@PrDepartment", performanceReview.Department);
+				cmd.Parameters.AddWithValue("@DateOfNextReview", performanceReview.DateOfNextReview);
+				cmd.Parameters.AddWithValue("@PrPromotedPosition", performanceReview.Promotion);
+				cmd.Parameters.AddWithValue("@PrSalaryIncrease", performanceReview.PayIncrease);
+				cmd.Parameters.AddWithValue("@Comments", performanceReview.Comments);
+
+				con.Open();
+
+				cmd.ExecuteNonQuery();
+
+				con.Close();
+				}
+		}
+		public IEnumerable<PositionsModel> DisplayRangeInformation()
 		{
 			// makes a list to store each record from the database which are loaded into the model
-			List<EmployeeTreeViewModel> etvModelList = new List<EmployeeTreeViewModel>();
+			List<PositionsModel> positionList = new List<PositionsModel>();
 
 			//makes the connection
 			using (SqlConnection con = new SqlConnection(connectionString))
@@ -703,7 +778,7 @@ namespace PerformanceAPI.Gateway
 				//makes the command for the stored procedure
 				//and sets its type
 				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
-				SqlCommand cmd = new SqlCommand("GetEmpTreeView", con)
+				SqlCommand cmd = new SqlCommand("GetAllPositions", con)
 				{
 					CommandType = CommandType.StoredProcedure
 				};
@@ -714,28 +789,66 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
-					{
-						//instantiates a new model
-						EmployeeTreeViewModel etvModel = new EmployeeTreeViewModel();
-						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-						etvModel.EmployeeLastName = dr["E_LAST_NAME"].ToString();
-						etvModel.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
-						etvModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
-						etvModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+					//instantiates a new model
+					PositionsModel positionModel = new PositionsModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					positionModel.PositionName = dr["POSITION_NAME"].ToString();
+					positionModel.SalaryLowerBound = Convert.ToDouble(dr["POSITION_SALARY_LOWER"].ToString()).ToString("N");
+					positionModel.SalaryUpperBound = Convert.ToDouble(dr["POSITION_SALARY_UPPER"].ToString()).ToString("N");
 
-
-						//adds the model with the records data in it to the list
-						etvModelList.Add(etvModel);
-					}
+					//adds the model with the records data in it to the list
+					positionList.Add(positionModel);
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
 			}
 			//returns the list of models
-			return etvModelList;
+			return positionList;
+			;
+		}
+		public IEnumerable<PositionsModel> DisplayTargetIncrease()
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<PositionsModel> targetList = new List<PositionsModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetTargetIncrease", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					PositionsModel targetModel = new PositionsModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					targetModel.RatingName = dr["P_RATING_NAME"].ToString();
+					targetModel.MGLowerBound = dr["MG_LOWER_BOUND"].ToString();
+					targetModel.MGTarget = dr["MG_TARGET"].ToString();
+					targetModel.MGUpperBound = dr["MG_UPPER_BOUND"].ToString();
+
+					//adds the model with the records data in it to the list
+					targetList.Add(targetModel);
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return targetList;
 			;
 		}
 
+		//next method for a stored procedure goes here
 	}
+
 }
+		

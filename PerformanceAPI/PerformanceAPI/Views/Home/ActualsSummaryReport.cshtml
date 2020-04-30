@@ -14,21 +14,21 @@
 
 @if (CurrentUserModel.CurrentReportYear)
 {
+    
+        double usedBudget = 0;
+        int employeesWithActuals = 0;
+        foreach (var item in Model)
+        {
+            usedBudget += item.Salary;
+            employeesWithActuals++;
+        }
+        CurrentUserModel.CurrentBudgetUsed = Convert.ToDouble(usedBudget);
+        CurrentUserModel.NumberOfEmployeesWithActuals = employeesWithActuals;
 
-    double usedBudget = 0;
-    int employeesWithActuals = 0;
-    foreach (var item in Model)
-    {
-        usedBudget += item.Salary;
-        employeesWithActuals++;
-    }
-    CurrentUserModel.CurrentBudgetUsed = Convert.ToDouble(usedBudget);
-    CurrentUserModel.NumberOfEmployeesWithActuals = employeesWithActuals;
-
-    @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
-    {
-        CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
-    }
+        @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
+        {
+            CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
+        }
 
 
     <p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
