@@ -11,6 +11,10 @@ namespace PerformanceAPI.Models
         public string PositionName { get; set;}
         public string SalaryLowerBound { get; set; }
         public string SalaryUpperBound { get; set; }
+        public string RatingName { get; set; }
+        public string MGLowerBound { get; set; }
+        public string MGTarget { get; set; }
+        public string MGUpperBound { get; set; }
 
     }
 }
