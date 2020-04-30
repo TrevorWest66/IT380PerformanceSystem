@@ -727,6 +727,87 @@ namespace PerformanceAPI.Gateway
 				con.Close();
 				}
 		}
+		public IEnumerable<PositionsModel> DisplayRangeInformation()
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<PositionsModel> positionList = new List<PositionsModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetAllPositions", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					PositionsModel positionModel = new PositionsModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					positionModel.PositionName = dr["POSITION_NAME"].ToString();
+					positionModel.SalaryLowerBound = Convert.ToDouble(dr["POSITION_SALARY_LOWER"].ToString()).ToString("N");
+					positionModel.SalaryUpperBound = Convert.ToDouble(dr["POSITION_SALARY_UPPER"].ToString()).ToString("N");
+
+					//adds the model with the records data in it to the list
+					positionList.Add(positionModel);
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return positionList;
+			;
+		}
+		public IEnumerable<PositionsModel> DisplayTargetIncrease()
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<PositionsModel> targetList = new List<PositionsModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetTargetIncrease", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					PositionsModel targetModel = new PositionsModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					targetModel.RatingName = dr["P_RATING_NAME"].ToString();
+					targetModel.MGLowerBound = dr["MG_LOWER_BOUND"].ToString();
+					targetModel.MGTarget = dr["MG_TARGET"].ToString();
+					targetModel.MGUpperBound = dr["MG_UPPER_BOUND"].ToString();
+
+					//adds the model with the records data in it to the list
+					targetList.Add(targetModel);
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return targetList;
+			;
+		}
+
+		//next method for a stored procedure goes here
 	}
 
 }
