@@ -1,0 +1,82 @@
+﻿@model PerformanceAPI.Models.PerformanceReviewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<h1><Edit></h1>
+
+<h4>Performance Review</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="InsertPerformanceReview">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label> />
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation="First Name" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label> />
+                <input asp-for="LastName" class="form-control" />
+                <span asp-validation="Last Name" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmployeeID" class="control-label"></label> />
+                <input asp-for="EmployeeID" class="form-control" />
+                <span asp-validation="Employee ID" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="Supervisor" class="control-label"></label> />
+                <input asp-for="Supervisor" class="form-control" />
+                <span asp-validation="Supervisor" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewDate" class="control-label"></label> />
+                <input asp-for="ReviewDate" class="form-control" />
+                <span asp-validation="Review Date" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReviewPeriod" class="control-label"></label> />
+                <input asp-for="ReviewPeriod" class="form-control" />
+                <span asp-validation="Review Period" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmployeePosition" class="control-label"></label> />
+                <input asp-for="EmployeePosition" class="form-control" />
+                <span asp-validation="Employee Position" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="PerformanceRatingID" class="control-label"></label> />
+                <input asp-for="PerformanceRatingID" class="form-control" />
+                <span asp-validation="Performance Rating ID" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="PerformanceRatingName" class="control-label"></label> />
+                <input asp-for="PerformanceRatingName" class="form-control" />
+                <span asp-validation="Performance Rating Name" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="PerformanceRatingDescription" class="control-label"></label> />
+                <input asp-for="PerformanceRatingDescription" class="form-control" />
+                <span asp-validation="Performance Rating Description" class="text-danger"></span>>
+            </div>
+            <div class="form-group">
+                <label asp-for="Comments" class="control-label"></label> />
+                <input asp-for="Comments" class="form-control" />
+                <span asp-validation="Comments" class="text-danger"></span>>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts{ 
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+}

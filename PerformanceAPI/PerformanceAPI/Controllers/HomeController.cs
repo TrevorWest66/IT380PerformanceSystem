@@ -22,7 +22,7 @@ namespace PerformanceAPI.Controllers
         {
             _logger = logger;
         }
-        
+
         public IActionResult Index()
         {
             return View();
@@ -33,10 +33,6 @@ namespace PerformanceAPI.Controllers
             return View();
         }
 
-        public IActionResult PerformanceReport()
-        {
-            return View();
-        }
 
         public IActionResult SalaryInformation()
         {
@@ -53,13 +49,13 @@ namespace PerformanceAPI.Controllers
         {
             //delete later
             Year = 2020;
-            if(Year == 0)
+            if (Year == 0)
             {
                 return NotFound();
             }
             // this gets the list of models and passes them into the view
             List<PredictionSummaryReportModel> psrModel = _db.GetDataForPredictionSummaryReportModel(Year).ToList();
-            if(psrModel == null)
+            if (psrModel == null)
             {
                 return NotFound();
             }
@@ -112,5 +108,35 @@ namespace PerformanceAPI.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        public IActionResult PerformanceReport()
+        {
+            List<PerformanceReviewModel> qsrModel = _db.GetDataForPerformanceReviewPage().ToList();
+            return View(qsrModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult PerformanceReport(int id, [Bind] PerformanceReviewModel performanceReview)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    performanceReview.EmployeeID = id;
+                    _db.InsertPerformanceReview(performanceReview);
+
+                }
+                return View(_db);
+            }
+            catch
+            {
+                return View();
+            }
+        }
     }
 }
+

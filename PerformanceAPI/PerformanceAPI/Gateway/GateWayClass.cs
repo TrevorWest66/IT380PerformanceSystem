@@ -211,6 +211,76 @@ namespace PerformanceAPI.Gateway
 		}
 
 		//next method for a stored procedure goes here
+		public IEnumerable<PerformanceReviewModel> GetDataForPerformanceReviewPage()
 
+		{
+			List<PerformanceReviewModel> performanceReviewModelList = new List<PerformanceReviewModel>();
+
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				SqlCommand cmd = new SqlCommand("GetDataForPerformanceReviewPage", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					PerformanceReviewModel qsrModel = new PerformanceReviewModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						qsrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						qsrModel.FirstName = dr["E_FIRST_NAME"].ToString();
+						qsrModel.LastName = dr["E_LAST_NAME"].ToString();
+						qsrModel.ReviewDate = dr["DATE_OF_REVIEW"].ToString();
+						qsrModel.EmployeePosition = dr["PR_POSITION"].ToString();
+						qsrModel.Supervisor = dr["PR_SUPERVISOR"].ToString();
+						qsrModel.PerformanceRatingID = dr["P_RATING_ID"].ToString();
+						qsrModel.ReviewPeriod = dr["PR_REVIEW_PERIOD"].ToString();
+						qsrModel.PerformanceRatingName = dr["P_RATING_NAME"].ToString();
+						qsrModel.PerformanceRatingDescription = dr["P_RATING_DESCRIPTION"].ToString();
+						qsrModel.Comments = dr["PR_COMMENTS"].ToString();
+					
+						performanceReviewModelList.Add(qsrModel);
+					}
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return performanceReviewModelList;
+		}
+	
+		public void InsertPerformanceReview(PerformanceReviewModel performanceReview)
+		{
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{ 
+				SqlCommand cmd = new SqlCommand("InsertPerformanceReview", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				cmd.Parameters.AddWithValue("@EmployeeID", performanceReview.EmployeeID);
+				cmd.Parameters.AddWithValue("@ReviewDate", performanceReview.ReviewDate);
+				cmd.Parameters.AddWithValue("@Supervisor", performanceReview.Supervisor);
+				cmd.Parameters.AddWithValue("@ReviewPeriod", performanceReview.ReviewPeriod);
+				cmd.Parameters.AddWithValue("@Position", performanceReview.EmployeePosition);
+				cmd.Parameters.AddWithValue("@Comments", performanceReview.Comments);
+				cmd.Parameters.AddWithValue("@PerformanceRatingID", performanceReview.PerformanceRatingID);
+
+				con.Open();
+
+				cmd.ExecuteNonQuery();
+
+				con.Close();
+				}
+		}
 	}
+
 }
+		
