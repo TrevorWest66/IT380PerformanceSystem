@@ -1,26 +1,24 @@
+@model IEnumerable<PerformanceAPI.Models.PositionsModel>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Index";
 }
-
-<link href="~/css/Chart.css" rel="stylesheet" />
+<link href="~/css/salaryinformation.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<style>
+<script src="~/js/ComparisonChart.js"></script>
+<script src="~/js/BudgetPirChart.js"></script>
+@{
+    double usedBudget = CurrentUserModel.CurrentBudgetUsed;
 
-    .divLeftBorder {
-        border-left: 1px solid black;
+    @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
+    {
+        CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
     }
+}
 
-    .divBorderNoTop {
-        border: 1px solid black;
-        border-top: none;
-    }
-
-    .bgGrey {
-        background: #DADADA !important;
-    }
-</style>
+<p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
+<p class="hidden-data" id="used-budget">@CurrentUserModel.CurrentBudgetUsed</p>
 
 <div class="row text-center">
     <div class="col-sm-12">
@@ -30,183 +28,89 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-8 col-sm-12">
-        <div class="row text-center divBorderNoTop" style="background:#E05A5A; border:1px solid">
-            <div class="col-sm-7">
-                Position
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                Salary Range
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                CIO
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                Director Business Technology
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                IS Manager
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                Systems Developer (1-5)
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                Systems Engineer (1-5)
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                Information Security Engineer (1-4)
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                Systems Architect
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <div class="row text-center divBorderNoTop bgGrey">
-            <div class="col-sm-7">
-                Senior Systems Architect
-            </div>
-            <div class="col-sm-5 divLeftBorder">
-                $175,000-$200,000
-            </div>
-        </div>
-        <br />
-        <br />
-        <br />
-    </div>
-    <div class="col-md-4 col-sm-12 text-right">
-        <canvas id="pie-chart-1" width=500 height="400"></canvas>
-    </div>
-    <div id="chartContainer" style="height: 450px; width: 100%;"></div>
-    </div>
+    <table style="width:64%">
+        <thead class="text-center divBorderNoTop" style="background:maroon; border:1px solid">
+            <tr>
+                <th class="divLeftBorder text-white" style="width:50%">
+                    Position
+                </th>
+                <th class="divLeftBorder text-white" style="width:50%">
+                    Salary Ranges
+                </th>
+            </tr>
+        </thead>
+        <tbody>
 
+            @foreach (var item in Model)
+            {
+                @if (Model != null)
+                {
+                    <tr class="text-center divBorderNoTop bg-gray">
+                        <td class="col-4 divLeftBorder" style="width:50%">
+                            @Html.DisplayFor(model => item.PositionName)
+                        </td>
+                        <td class=" col-1 divLeftBorder" style="width:50%">
+                            $@Html.DisplayFor(model => item.SalaryLowerBound)-$@Html.DisplayFor(model => item.SalaryUpperBound)
+                        </td>
 
-
-<script>
-
-    //added setTime function which waits for chart library to load then it triggers chart related methods.
-    setTimeout(function () {
-        Chart.defaults.global.legend = { display: false }
-        new Chart(document.getElementById("pie-chart-1"), {
-            type: 'pie',
-            data: {
-                labels: ["Expense", "Income"],
-                datasets: [{
-                    label: "Budget",
-                    backgroundColor: ["#E05A5A", "#DADADA"],
-                    data: [80, 20]
-                }]
-            },
-            options: {
-                title: {
-                    display: true,
-                    text: 'Annual Budget'
+                    </tr>
                 }
             }
-        });
-        Chart.defaults.global.legend = { display: false }
-        var chart = new CanvasJS.Chart("chartContainer", {
-            animationEnabled: true,
-            title: {
-                text: "Budget Distribution 2019 vs. Budget Distribution 2020"
-            },
-            axisY: {
-                title: "Thousand Dollars/$",
-                titleFontColor: "#4F81BC",
-                lineColor: "#4F81BC",
-                labelFontColor: "#4F81BC",
-                tickColor: "#4F81BC"
-            },
-            axisY2: {
-                title: "Thousand Dollars/$",
-                titleFontColor: "#C0504E",
-                lineColor: "#C0504E",
-                labelFontColor: "#C0504E",
-                tickColor: "#C0504E"
-            },
-            toolTip: {
-                shared: true
-            },
-            legend: {
-                cursor: "pointer",
-                itemclick: toggleDataSeries
-            },
-            data: [{
-                type: "column",
-                name: "Budget Distribution 2020/$",
-                legendText: "Budget Distribution 2020",
-                showInLegend: true,
-                dataPoints: [
-                    { label: "EC", y: 200.00 },
-                    { label: "SC +", y: 200.00 },
-                    { label: "SC", y: 200.00 },
-                    { label: "SC -", y: 200.00 },
-                    { label: "NI", y: 200.00 },
-                ]
-            },
+
+        </tbody>
+    </table>
+    <div id="budget-chart"></div>
+</div>
+<br/>
+<br/>
+<div class="row">
+    <table style="width:100%">
+        <thead class="text-center divBorderNoTop" style="background:maroon; border:1px solid">
+            <tr>
+                <th class="divLeftBorder text-white"style="width:40%">
+                    Rating Name
+                </th>
+                <th class="divLeftBorder text-white"style="width:20%">
+                    Lower Bound
+                </th>
+                <th class="divLeftBorder text-white"style="width:20%">
+                    Target
+                </th>
+                <th class="divLeftBorder text-white"style="width:20%">
+                    Upper Bound
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var x in Model)
             {
-                type: "column",
-                name: "Budget Distribution 2019/$",
-                legendText: "Budget Distribution",
-                axisYType: "secondary",
-                showInLegend: true,
-                dataPoints: [
-                    { label: "EC", y: 300.00 },
-                    { label: "SC +", y: 300.00 },
-                    { label: "SC", y: 300.00 },
-                    { label: "SC -", y: 300.00 },
-                    { label: "NI", y: 300.00 },
-                ]
-            }]
-        });
-        chart.render();
+                @if (x != null)
+                {
+                    <tr class="text-center divBorderNoTop bg-gray">
+                        <td class="col-4 divLeftBorder"style="width:40%">
+                            @Html.DisplayFor(model => x.RatingName)
+                        </td>
+                        <td class=" col-1 divLeftBorder"style="width:20%">
+                            @Html.DisplayFor(model => x.MGLowerBound)
+                        </td>
+                        <td class=" col-1 divLeftBorder"style="width:20%">
+                            @Html.DisplayFor(model => x.MGTarget)
+                        </td>
+                        <td class=" col-1 divLeftBorder"style="width:20%">
+                            @Html.DisplayFor(model => x.MGUpperBound)
+                        </td>
 
-        function toggleDataSeries(e) {
-            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
-                e.dataSeries.visible = false;
+                    </tr>
+                }
             }
-            else {
-                e.dataSeries.visible = true;
-            }
-            chart.render();
-        }
-
-    }, 600);
-
-</script>
+        </tbody>
+    </table>
+</div>
+<br />
+<br />
+<br />
+<br />
+<div id="chartContainer" style="height: 450px; width: 100%;"></div>
 
 
 
