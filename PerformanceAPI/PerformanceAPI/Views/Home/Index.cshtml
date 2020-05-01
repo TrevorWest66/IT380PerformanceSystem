@@ -129,28 +129,22 @@
 					<!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
 					<tr>
 						<th>
-							@Html.DisplayNameFor(model => model.FirstName)
+							Name
 						</th>
 						<th>
-							@Html.DisplayNameFor(model => model.MiddleInitial)
+							Position
 						</th>
 						<th>
-							@Html.DisplayNameFor(model => model.LastName)
+							Projected Rating
 						</th>
 						<th>
-							@Html.DisplayNameFor(model => model.PositionName)
+							Actual Rating
 						</th>
 						<th>
-							@Html.DisplayNameFor(model => model.PredictionRating)
+							Projected Pay Increase 
 						</th>
 						<th>
-							@Html.DisplayNameFor(model => model.ActualRating)
-						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.PredictionSalary)
-						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.ActualSalary)
+							Projected Salary
 						</th>
 
 					</tr>
@@ -160,13 +154,7 @@
 					{
 						<tr>
 							<td>
-								@Html.DisplayFor(model => item.FirstName)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.MiddleInitial)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.LastName)
+								@Html.DisplayFor(model => item.LastName), @Html.DisplayFor(model => item.FirstName) @Html.DisplayFor(model => item.MiddleInitial)
 							</td>
 							<td>
 								@Html.DisplayFor(model => item.PositionName)
@@ -178,10 +166,10 @@
 								@Html.DisplayFor(model => item.ActualRating)
 							</td>
 							<td>
-								@Html.DisplayFor(model => item.PredictionSalary)
+								@Html.DisplayFor(model => item.PredictionSalary)%
 							</td>
 							<td>
-								@Html.DisplayFor(model => item.ActualSalary)
+								$@Html.DisplayFor(model => item.ActualSalary)
 							</td>
 
 

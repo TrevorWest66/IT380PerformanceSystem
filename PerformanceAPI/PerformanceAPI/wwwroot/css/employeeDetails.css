@@ -53,3 +53,16 @@
 td {
 	font-size: 22px;
 }
+
+.maroon-link a{
+	font-weight: 500;
+	font-size: large;
+	background-color: lightgray;
+	border-color: maroon;
+	border: thin;
+	border-radius: 5px;
+	padding: 5px;
+	margin-bottom: auto;
+	margin-top: auto;
+
+}

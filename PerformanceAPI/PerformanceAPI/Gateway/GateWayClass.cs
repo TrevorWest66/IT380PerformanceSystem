@@ -535,7 +535,7 @@ namespace PerformanceAPI.Gateway
 							//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
 							indModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
 							indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
-							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString())*100;
 						}
 
 						//if date of projecion does not equal to 2020
