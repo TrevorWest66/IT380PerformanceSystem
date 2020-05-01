@@ -101,9 +101,18 @@ else
             @foreach (var item in Model)
             {
             <tr>
-                <td class="maroon-link">
-                    @Html.ActionLink(item.EmployeeID + "", "EditProjection", new { id = item.EmployeeID })
-                </td>
+                @if (item.DateOfProjection.Contains(CurrentUserModel.CurrentYear))
+                {
+                    <td class="maroon-link">
+                        @Html.ActionLink(item.EmployeeID + "", "EditProjection", new { id = item.EmployeeID })
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmployeeID)
+                    </td>
+                }
                 <td>
                     @Html.DisplayFor(modelItem => item.FirstName)
                 </td>

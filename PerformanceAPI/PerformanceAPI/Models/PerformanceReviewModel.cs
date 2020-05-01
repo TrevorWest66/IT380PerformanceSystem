@@ -21,11 +21,12 @@ namespace PerformanceAPI.Models
         { get; set; }
         public string PerformanceRatingID
         { get; set; }
+        public string PrLastRating { get; set; }
+        public string Department { get; set; }
+        public string DateOfNextReview { get; set; }
+        public string Promotion { get; set; }
+        public double PayIncrease { get; set; }
         public string ReviewPeriod
-        { get; set; }
-        public string PerformanceRatingDescription
-        { get; set; }
-        public string PerformanceRatingName
         { get; set; }
         public string Comments
         { get; set; }

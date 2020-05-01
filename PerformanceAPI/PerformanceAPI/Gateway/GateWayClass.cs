@@ -445,6 +445,50 @@ namespace PerformanceAPI.Gateway
 			}
 		}
 
+		public IEnumerable<EmployeeTreeViewModel> GetDataForEmpTree()
+		{
+			// makes a list to store each record from the database whihc are loaded into the model
+			List<EmployeeTreeViewModel> empTreeList = new List<EmployeeTreeViewModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetEmpTreeView", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					//instantiates a new model
+					EmployeeTreeViewModel emp = new EmployeeTreeViewModel();
+					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					{
+						emp.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						emp.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
+						emp.EmployeeLastName = dr["E_LAST_NAME"].ToString();
+						emp.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+
+						//adds the model with the records data in it to the list
+						empTreeList.Add(emp);
+					}
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
+			//returns the list of models
+			return empTreeList;
+		}
+
 		//This will call the stored procedure for thr Index model
 		public IEnumerable<IndexModel> GetDataForIndexModel(int Year)
 		{
@@ -472,23 +516,58 @@ namespace PerformanceAPI.Gateway
 				//creates the model projects for each row and adds them to the list
 				while (dr.Read())
 				{
+
 					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
 					{
 						//instantiates a new model
 						IndexModel indModel = new IndexModel();
+						
+						//if date of projecion does not equal to 2020
+						if (!(dr["DATE_OF_PROJECTION"].ToString().Contains (CurrentUserModel.CurrentYear)))
+						{
 
-						//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
-						indModel.FirstName = dr["E_FIRST_NAME"].ToString();
-						indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
-						indModel.LastName = dr["E_LAST_NAME"].ToString();
-						indModel.PositionName = dr["POSITION_NAME"].ToString();
-						indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
-						indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
-						indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+							indModel.DateOfProjection = "";
+							indModel.PredictionRating = "";
+							indModel.PredictionSalary = 0;;
+						} 
+						else
+						{
+							//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
+							indModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
+							indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
+							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+						}
+
+						//if date of projecion does not equal to 2020
+						if (!(dr["DATE_OF_REVIEW"].ToString().Contains(CurrentUserModel.CurrentYear)))
+						{
+							indModel.DateOfActuals = "";
+							indModel.ActualRating = "";
+							indModel.ActualSalary = 0;
+						}
+						else
+						{
+							//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+							indModel.DateOfActuals = dr["DATE_OF_REVIEW"].ToString();
+							indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
+							indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+						}
+
+							indModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+							indModel.FirstName = dr["E_FIRST_NAME"].ToString();
+							indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
+							indModel.LastName = dr["E_LAST_NAME"].ToString();
+							indModel.PositionName = dr["POSITION_NAME"].ToString();
+							indModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+
+
+
+						indModel.etvModelList = GetDataForEmpTree().ToList();
 
 						//adds the model with the records data in it to the list
 						indexModelList.Add(indModel);
 					}
+
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -658,10 +737,10 @@ namespace PerformanceAPI.Gateway
 		}
 
 		//next method for a stored procedure goes here
-		public IEnumerable<PerformanceReviewModel> GetDataForPerformanceReviewPage()
+		public PerformanceReviewModel GetDataForPerformanceReviewPage(int id)
 
 		{
-			List<PerformanceReviewModel> performanceReviewModelList = new List<PerformanceReviewModel>();
+			PerformanceReviewModel qsrModel = new PerformanceReviewModel();
 
 			using (SqlConnection con = new SqlConnection(connectionString))
 			{
@@ -669,6 +748,8 @@ namespace PerformanceAPI.Gateway
 				{
 					CommandType = CommandType.StoredProcedure
 				};
+
+				cmd.Parameters.AddWithValue("@EmployeeID", id);
 				
 				//opens the connection
 				con.Open();
@@ -677,30 +758,28 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					PerformanceReviewModel qsrModel = new PerformanceReviewModel();
 					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
-					{
-						qsrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
-						qsrModel.FirstName = dr["E_FIRST_NAME"].ToString();
-						qsrModel.LastName = dr["E_LAST_NAME"].ToString();
-						qsrModel.ReviewDate = dr["DATE_OF_REVIEW"].ToString();
-						qsrModel.EmployeePosition = dr["PR_POSITION"].ToString();
-						qsrModel.Supervisor = dr["PR_SUPERVISOR"].ToString();
-						qsrModel.PerformanceRatingID = dr["P_RATING_ID"].ToString();
-						qsrModel.ReviewPeriod = dr["PR_REVIEW_PERIOD"].ToString();
-						qsrModel.PerformanceRatingName = dr["P_RATING_NAME"].ToString();
-						qsrModel.PerformanceRatingDescription = dr["P_RATING_DESCRIPTION"].ToString();
-						qsrModel.Comments = dr["PR_COMMENTS"].ToString();
+					qsrModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+					qsrModel.FirstName = dr["E_FIRST_NAME"].ToString();
+					qsrModel.LastName = dr["E_LAST_NAME"].ToString();
+					qsrModel.ReviewDate = dr["DATE_OF_REVIEW"].ToString();
+					qsrModel.Supervisor = dr["SUPERVISOR_ID"].ToString();
+					qsrModel.ReviewPeriod = dr["PR_REVIEW_PERIOD"].ToString();
+					qsrModel.PerformanceRatingID = dr["PR_PROJECTION"].ToString();
+					qsrModel.PrLastRating = dr["PR_LAST_RATING"].ToString();
+					qsrModel.EmployeePosition = dr["PR_POSITION"].ToString();
+					qsrModel.Department = dr["PR_DEPARTMENT"].ToString();
+					qsrModel.DateOfNextReview = dr["PR_DATE_OF_NEXT_REVIEW"].ToString();
+					qsrModel.Promotion = dr["PROJECTED_POSITION"].ToString();
+					qsrModel.PayIncrease = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					qsrModel.Comments = dr["PR_COMMENTS"].ToString();
 					
-						performanceReviewModelList.Add(qsrModel);
-					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
 			}
 			//returns the list of models
-			return performanceReviewModelList;
+			return qsrModel;
 		}
 	
 		public void InsertPerformanceReview(PerformanceReviewModel performanceReview)
@@ -716,9 +795,14 @@ namespace PerformanceAPI.Gateway
 				cmd.Parameters.AddWithValue("@ReviewDate", performanceReview.ReviewDate);
 				cmd.Parameters.AddWithValue("@Supervisor", performanceReview.Supervisor);
 				cmd.Parameters.AddWithValue("@ReviewPeriod", performanceReview.ReviewPeriod);
-				cmd.Parameters.AddWithValue("@Position", performanceReview.EmployeePosition);
-				cmd.Parameters.AddWithValue("@Comments", performanceReview.Comments);
 				cmd.Parameters.AddWithValue("@PerformanceRatingID", performanceReview.PerformanceRatingID);
+				cmd.Parameters.AddWithValue("@PrRatingLast", performanceReview.PrLastRating);
+				cmd.Parameters.AddWithValue("@Position", performanceReview.EmployeePosition);
+				cmd.Parameters.AddWithValue("@PrDepartment", performanceReview.Department);
+				cmd.Parameters.AddWithValue("@DateOfNextReview", performanceReview.DateOfNextReview);
+				cmd.Parameters.AddWithValue("@PrPromotedPosition", performanceReview.Promotion);
+				cmd.Parameters.AddWithValue("@PrSalaryIncrease", performanceReview.PayIncrease);
+				cmd.Parameters.AddWithValue("@Comments", performanceReview.Comments);
 
 				con.Open();
 
