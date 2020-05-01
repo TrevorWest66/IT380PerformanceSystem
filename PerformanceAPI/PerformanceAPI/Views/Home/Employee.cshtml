@@ -74,11 +74,14 @@
                 <td>Projection Comments</td>
                 <td>@Html.DisplayFor(modelItem => item.ProjectionComments)</td>
             </tr>
-            <tr>
-                <td class="maroon-link">
-                    @Html.ActionLink("New Performance Review", "PerformanceReview", new { id = item.EmployeeID })
-                </td>
-            </tr>
+            @if(item.DateOfProjection.Contains("2020"))
+            {
+                <tr>
+                    <td class="maroon-link">
+                        @Html.ActionLink("New Performance Review", "PerformanceReview", new { id = item.EmployeeID })
+                    </td>
+                </tr>
+            }
         </tbody>
     }
 

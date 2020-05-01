@@ -236,6 +236,10 @@ namespace PerformanceAPI.Controllers
                 if (ModelState.IsValid)
                 {
                     projection.EmployeeID = id;
+                    if(projection.ProjectionsComments is null)
+                    {
+                        projection.ProjectionsComments = "--";
+                    }
                     _db.UpdateProjectionByID(projection);
                     return RedirectToAction("PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear)});
                 }
