@@ -246,7 +246,7 @@ namespace PerformanceAPI.Gateway
 
 
 
-	public IEnumerable<EmployeeListProjectionsModel> GetEmployeesForProjections()
+		public IEnumerable<EmployeeListProjectionsModel> GetEmployeesForProjections()
 		{
 			// makes a list to store each record from the database which are loaded into the model
 			List<EmployeeListProjectionsModel> employeeProjectionsList = new List<EmployeeListProjectionsModel>();
@@ -521,21 +521,21 @@ namespace PerformanceAPI.Gateway
 					{
 						//instantiates a new model
 						IndexModel indModel = new IndexModel();
-						
+
 						//if date of projecion does not equal to 2020
-						if (!(dr["DATE_OF_PROJECTION"].ToString().Contains (CurrentUserModel.CurrentYear)))
+						if (!(dr["DATE_OF_PROJECTION"].ToString().Contains(CurrentUserModel.CurrentYear)))
 						{
 
 							indModel.DateOfProjection = "";
 							indModel.PredictionRating = "";
-							indModel.PredictionSalary = 0;;
-						} 
+							indModel.PredictionSalary = 0; ;
+						}
 						else
 						{
 							//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
 							indModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
 							indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
-							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString())*100;
+							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString()) * 100;
 						}
 
 						//if date of projecion does not equal to 2020
@@ -553,12 +553,12 @@ namespace PerformanceAPI.Gateway
 							indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
 						}
 
-							indModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
-							indModel.FirstName = dr["E_FIRST_NAME"].ToString();
-							indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
-							indModel.LastName = dr["E_LAST_NAME"].ToString();
-							indModel.PositionName = dr["POSITION_NAME"].ToString();
-							indModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
+						indModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
+						indModel.FirstName = dr["E_FIRST_NAME"].ToString();
+						indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
+						indModel.LastName = dr["E_LAST_NAME"].ToString();
+						indModel.PositionName = dr["POSITION_NAME"].ToString();
+						indModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
 
 
 
@@ -673,7 +673,7 @@ namespace PerformanceAPI.Gateway
 			ProjectionsModel projection = new ProjectionsModel();
 			//makes the connection
 			using (SqlConnection con = new SqlConnection(connectionString))
-			{	
+			{
 				//makes the command for the stored procedure
 				//and sets its type
 				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
@@ -694,7 +694,7 @@ namespace PerformanceAPI.Gateway
 					projection.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 					projection.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
 					projection.ProjectedRating = dr["PR_PROJECTION"].ToString();
-					projection.ProjectedSalaryIncrease =  1 + Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					projection.ProjectedSalaryIncrease = 1 + Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
 					projection.ProjectedPosition = dr["PROJECTED_POSITION"].ToString();
 					projection.ProjectionsComments = dr["COMMMENTS"].ToString();
 					projection.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
@@ -750,7 +750,7 @@ namespace PerformanceAPI.Gateway
 				};
 
 				cmd.Parameters.AddWithValue("@EmployeeID", id);
-				
+
 				//opens the connection
 				con.Open();
 				//executes the stored procedure
@@ -773,7 +773,7 @@ namespace PerformanceAPI.Gateway
 					qsrModel.Promotion = dr["PROJECTED_POSITION"].ToString();
 					qsrModel.PayIncrease = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
 					qsrModel.Comments = dr["PR_COMMENTS"].ToString();
-					
+
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -781,11 +781,11 @@ namespace PerformanceAPI.Gateway
 			//returns the list of models
 			return qsrModel;
 		}
-	
+
 		public void InsertPerformanceReview(PerformanceReviewModel performanceReview)
 		{
 			using (SqlConnection con = new SqlConnection(connectionString))
-			{ 
+			{
 				SqlCommand cmd = new SqlCommand("InsertPerformanceReview", con)
 				{
 					CommandType = CommandType.StoredProcedure
@@ -809,7 +809,7 @@ namespace PerformanceAPI.Gateway
 				cmd.ExecuteNonQuery();
 
 				con.Close();
-				}
+			}
 		}
 		public IEnumerable<PositionsModel> DisplayRangeInformation()
 		{
@@ -890,8 +890,6 @@ namespace PerformanceAPI.Gateway
 			return targetList;
 			;
 		}
-
-		//next method for a stored procedure goes here
 	}
 
 }
