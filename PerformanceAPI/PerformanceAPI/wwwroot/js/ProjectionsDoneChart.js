@@ -2,7 +2,7 @@
 google.charts.setOnLoadCallback(drawChart);
 
 function drawChart() {
-	let completedEmployees = parseInt(document.getElementById('employees-done').innerHTML);
+	let completedEmployees = parseInt(document.getElementById('employees-projections-done').innerHTML);
 	let totalEmployees = parseInt(document.getElementById('employees-total').innerHTML);
 	let notCompletedEmployees = totalEmployees - completedEmployees;
 

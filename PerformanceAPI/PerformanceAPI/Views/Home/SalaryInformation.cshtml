@@ -4,18 +4,6 @@
     ViewData["Title"] = "Salary Information";
 }
 <link href="~/css/salaryinformation.css" rel="stylesheet" />
-<script src="~/js/BudgetPirChart.js"></script>
-@{
-    double usedBudget = CurrentUserModel.CurrentBudgetUsed;
-
-    @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
-    {
-        CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
-    }
-}
-
-<p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
-<p class="hidden-data" id="used-budget">@CurrentUserModel.CurrentBudgetUsed</p>
 
 <div class="row text-center">
     <div class="col-sm-12">
@@ -25,41 +13,40 @@
 <hr />
 
 <div class="row">
-    <table style="width:64%">
-        <thead class="text-center divBorderNoTop" style="background:maroon; border:1px solid">
-            <tr>
-                <th class="divLeftBorder text-white" style="width:50%">
-                    Position
-                </th>
-                <th class="divLeftBorder text-white" style="width:50%">
-                    Salary Ranges
-                </th>
-            </tr>
-        </thead>
-        <tbody>
+    <div style="overflow:scroll;height:300px;width:100%;overflow:auto">
+        <table style="width: 100%">
+            <thead class="text-center divBorderNoTop" style="background:maroon; border:1px solid">
+                <tr>
+                    <th class="divLeftBorder text-white" style="width:50%">
+                        Position
+                    </th>
+                    <th class="divLeftBorder text-white" style="width:50%">
+                        Salary Ranges
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
 
-            @foreach (var item in Model)
-            {
-                @if (item.SalaryLowerBound != null)
+                @foreach (var item in Model)
                 {
-                    <tr class="text-center divBorderNoTop bg-gray">
-                        <td class="col-4 divLeftBorder" style="width:50%">
-                            @Html.DisplayFor(model => item.PositionName)
-                        </td>
-                        <td class=" col-1 divLeftBorder" style="width:50%">
-                            $@Html.DisplayFor(model => item.SalaryLowerBound)-$@Html.DisplayFor(model => item.SalaryUpperBound)
-                        </td>
+                    @if (item.SalaryLowerBound != null)
+                    {
+                        <tr class="text-center divBorderNoTop bg-gray">
+                            <td class="col-4 divLeftBorder" style="width:50%">
+                                @Html.DisplayFor(model => item.PositionName)
+                            </td>
+                            <td class=" col-1 divLeftBorder" style="width:50%">
+                                $@Html.DisplayFor(model => item.SalaryLowerBound)-$@Html.DisplayFor(model => item.SalaryUpperBound)
+                            </td>
 
-                    </tr>
+                        </tr>
+                    }
                 }
-            }
 
-        </tbody>
-    </table>
-    <div id="budget-chart"></div>
+            </tbody>
+        </table>
+    </div>
 </div>
-<br />
-<br />
 <div class="row">
     <table style="width:100%">
         <thead class="text-center divBorderNoTop" style="background:maroon; border:1px solid">

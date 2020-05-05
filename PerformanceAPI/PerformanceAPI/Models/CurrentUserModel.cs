@@ -14,6 +14,7 @@ namespace PerformanceAPI.Models
 		public static string CurrentYear = DateTime.Now.ToString("yyyy");
 		public static double CurrentBudge;
 		public static List<int> ListOfSubordinates = new List<int>();
+		public static List<int> ListOfSubordinatePositoin = new List<int>();
 		public static int NumberOfEmployees;
 
 		// Set in index page

@@ -27,13 +27,15 @@ namespace PerformanceAPI.Controllers
         {
             int year = Convert.ToInt32(CurrentUserModel.CurrentYear);
 
-            //delete later
             List<IndexModel> indModel = _db.GetDataForIndexModel(year).ToList();
             return View(indModel);
         }
 
         public IActionResult Login()
         {
+            CurrentUserModel.ListOfSubordinates.Clear();
+            CurrentUserModel.ListOfSubordinatePositoin.Clear();
+            PerformanceRatingModel.listOfRatingInfo.Clear();
             return View();
         }
 

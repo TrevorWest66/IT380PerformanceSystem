@@ -11,16 +11,18 @@ namespace PerformanceAPI.Models
         public string FirstName { get; set; }
         public string MiddleInitial { get; set; }
         public string LastName { get; set; }
-        public string PositionName { get; set; }
+        public string ProjectedPositionName { get; set; }
+        public string ActualPositionName { get; set; }
         public string PredictionRating { get; set; }
         public string ActualRating { get; set; }
         public double PredictionSalary { get; set; }
-        public double ActualSalary { get; set; }
+        public string FormattedPredictionSalary { get; set; }
+        public double ActualSalaryIncrease { get; set; }
+        public string FormattedActualSalaryIncrease { get; set; }
         public string DateOfProjection { get; set; }
         public string DateOfActuals { get; set; }
-        public string PerformanceReview { get; set; }
         public int SupervisorID { get; set; }
-
+        public bool ShowArrow { get; set; }
 
 
         public List<EmployeeTreeViewModel> etvModelList { get; set; }

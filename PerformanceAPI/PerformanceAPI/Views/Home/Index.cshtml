@@ -7,182 +7,184 @@
     <h1> Home </h1>
 
 @{
-    double usedBudget = 0;
-    double usedBudgetActual = 0;
-    int employeesWithProjections = 0;
-    int employeesWithActuals = 0;
-    foreach (var item in Model)
-    {
-        usedBudget += (item.ActualSalary * (item.PredictionSalary + 1));
-        employeesWithProjections++;
+	int employeesWithProjections = 0;
+	int employeesWithActuals = 0;
+	foreach (var item in Model)
+	{
+		if (!item.PredictionRating.Equals(""))
+		{
+			employeesWithProjections++;
+		}
 
-        usedBudgetActual += item.ActualSalary;
-        employeesWithActuals++;
-    }
+		if (!item.ActualRating.Equals(""))
+		{
+			employeesWithActuals++;
+		}
+	}
 
-    CurrentUserModel.CurrentBudgetUsed = Convert.ToDouble(usedBudget);
-    CurrentUserModel.NumberOfEmployeesWithProjections = employeesWithProjections;
-    CurrentUserModel.NumberOfEmployeesWithActuals = employeesWithActuals;
+	CurrentUserModel.NumberOfEmployeesWithProjections = employeesWithProjections;
+	CurrentUserModel.NumberOfEmployeesWithActuals = employeesWithActuals;
 
-    @if (CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed < 0)
-    {
-        CurrentUserModel.OverBudgetAmount = CurrentUserModel.CurrentBudge - CurrentUserModel.CurrentBudgetUsed;
-    }
 }
-<p class="hidden-data" id="current-budget">@CurrentUserModel.CurrentBudge</p>
-<p class="hidden-data" id="used-budget">@CurrentUserModel.CurrentBudgetUsed</p>
-<p class="hidden-data" id="employees-done">@CurrentUserModel.NumberOfEmployeesWithProjections</p>
-<p class="hidden-data" id="employees-done">@CurrentUserModel.NumberOfEmployeesWithActuals</p>
+<p class="hidden-data" id="employees-projections-done">@CurrentUserModel.NumberOfEmployeesWithProjections</p>
+<p class="hidden-data" id="employees-actuals-done">@CurrentUserModel.NumberOfEmployeesWithActuals</p>
 <p class="hidden-data" id="employees-total">@CurrentUserModel.NumberOfEmployees</p>
 
 
-<section class="container">
-
-	<div class="text-center">
-		<div class="box" id="employee-tree">
-			<h2>Employees</h2>
-			<ul id="EmployeeTree">
-				<li>
-					@foreach (var item in Model)
-					{
-						if (item.SupervisorID == CurrentUserModel.CurrentEmployeeID)
+<div>
+	<div class="row">
+		<div class="col-3">
+			<div id="employee-tree">
+				<h2>Employees</h2>
+				<ul id="EmployeeTree">
+					<li>
+						@foreach (var item in Model)
 						{
-							<span class="maroon-link"> @Html.ActionLink(item.FirstName + item.LastName, "Employee", new { id = item.EmployeeID })</span>
-							<ul>
-								<li>
-									@foreach (var i2 in item.etvModelList)
-									{
-										if (i2.SupervisorID == item.EmployeeID)
+							if (item.SupervisorID == CurrentUserModel.CurrentEmployeeID)
+							{
+								<i class="fa fa-forward"></i>
+								<span class="maroon-link"> @Html.ActionLink(item.FirstName + item.LastName, "Employee", new { id = item.EmployeeID })</span>
+								<ul>
+									<li>
+										@foreach (var i2 in item.etvModelList)
 										{
-											<span class="maroon-link">@Html.ActionLink(i2.EmployeeFirstName + i2.EmployeeLastName, "Employee", new { id = i2.EmployeeID })</span>
-											<ul>
-												<li>
-													@foreach (var i3 in item.etvModelList)
-													{
-														if (i3.SupervisorID == i2.EmployeeID)
+											if (i2.SupervisorID == item.EmployeeID)
+											{
+												item.ShowArrow = true;
+												<i class="fa fa-forward"></i>
+												<span class="maroon-link ">@Html.ActionLink(i2.EmployeeFirstName + i2.EmployeeLastName, "Employee", new { id = i2.EmployeeID })</span>
+												<ul>
+													<li>
+														@foreach (var i3 in item.etvModelList)
 														{
-															<span class="maroon-link"> @Html.ActionLink(i3.EmployeeFirstName + i3.EmployeeLastName, "Employee", new { id = i3.EmployeeID })</span>
-															<ul>
-																<li>
-																	@foreach (var i4 in item.etvModelList)
-																	{
-																		if (i4.SupervisorID == i3.EmployeeID)
+															if (i3.SupervisorID == i2.EmployeeID)
+															{
+																i2.ShowArrow = true;
+																<i class="fa fa-forward"></i>
+																<span class="maroon-link"> @Html.ActionLink(i3.EmployeeFirstName + i3.EmployeeLastName, "Employee", new { id = i3.EmployeeID })</span>
+																<ul>
+																	<li>
+																		@foreach (var i4 in item.etvModelList)
 																		{
-																			<span class="maroon-link"> @Html.ActionLink(i4.EmployeeFirstName + i4.EmployeeLastName, "Employee", new { id = i4.EmployeeID })</span>
-																			<ul>
-																				<li>
-																					@foreach (var i5 in item.etvModelList)
-																					{
-																						if (i5.SupervisorID == i4.EmployeeID)
+																			if (i4.SupervisorID == i3.EmployeeID)
+																			{
+																				i3.ShowArrow = true;
+																				<i class="fa fa-forward"></i>
+																				<span class="maroon-link"> @Html.ActionLink(i4.EmployeeFirstName + i4.EmployeeLastName, "Employee", new { id = i4.EmployeeID })</span>
+																				<ul>
+																					<li>
+																						@foreach (var i5 in item.etvModelList)
 																						{
-																							<span class="maroon-link"> @Html.ActionLink(i5.EmployeeFirstName + i5.EmployeeLastName, "Employee", new { id = i5.EmployeeID })</span>
+																							if (i5.SupervisorID == i4.EmployeeID)
+																							{
+																								i4.ShowArrow = true;
+																								<i class="fa fa-forward"></i>
+																								<span class="maroon-link"> @Html.ActionLink(i5.EmployeeFirstName + i5.EmployeeLastName, "Employee", new { id = i5.EmployeeID })</span>
+																							}
 																						}
-																					}
-																				</li>
-																			</ul>
+																					</li>
+																				</ul>
+																			}
 																		}
-																	}
-																</li>
-															</ul>
+																	</li>
+																</ul>
+															}
 														}
-													}
-												</li>
-											</ul>
+													</li>
+												</ul>
+											}
 										}
-									}
-								</li>
-							</ul>
+									</li>
+								</ul>
+							}
 						}
-					}
-			</ul>
-		</div>
-	</div>
-
-	<div class="rightPane">
-		<div class="pieChartDiv">
-
-			<table id="predictions-report-charts">
-				<tr>
-					<td>
-						@if (CurrentUserModel.OverBudgetAmount < 0)
-						{
-							<h3>You are overbudget by:</h3>
-							<h3>@CurrentUserModel.GetFormattedOverBudgetAmount()</h3>
-						}
-						else
-						{
-							<div id="budget-chart"></div>
-						}
-
-					</td>
-					<td><div id="projections-chart"></div></td>
-
-					<td><div id="actuals-chart"></div></td>
-				</tr>
-			</table>
+					</li>
+				</ul>
+			</div>
 		</div>
 
-
-		<div class="tableDiv">
-			<table class=" table table-bordered table-striped" style="width: 1000px">
-				<thead class=" thead-dark">
-					<!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
+		<div class="col-9">
+			<div>
+				<table id="predictions-report-charts">
 					<tr>
-						<th style="width: 25%">
-							Name
-						</th>
-						<th style="width: 25%">
-							Position
-						</th>
-						<th style="width: 10%">
-							Projected Rating
-						</th>
-						<th style="width: 10%">
-							Actual Rating
-						</th>
-						<th style="width: 15%">
-							Projected Pay Increase 
-						</th>
-						<th style="width: 15%">
-							Projected Salary
-						</th>
+						<td><div id="projections-chart"></div></td>
 
+						<td><div id="actuals-chart"></div></td>
 					</tr>
-				</thead>
-				<tbody>
-					@foreach (var item in Model)
-					{
-						<tr>
-							<td>
-								@Html.DisplayFor(model => item.LastName), @Html.DisplayFor(model => item.FirstName) @Html.DisplayFor(model => item.MiddleInitial)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.PositionName)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.PredictionRating)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.ActualRating)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.PredictionSalary)%
-							</td>
-							<td>
-								$@Html.DisplayFor(model => item.ActualSalary)
-							</td>
+				</table>
+			</div>
 
+
+			<div style="overflow:scroll;height:400px;width:100%;overflow:auto">
+				<table class=" table table-bordered table-striped">
+					<thead class=" thead-dark">
+						<!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
+						<tr>
+							<th style="width: 10%">
+								EmployeeID
+							</th>
+							<th style="width: 20%">
+								Name
+							</th>
+							<th style="width: 15%">
+								Projected Position
+							</th>
+							<th style="width: 15%">
+								Actual Position
+							</th>
+							<th style="width: 10%">
+								Projected Rating
+							</th>
+							<th style="width: 10%">
+								Actual Rating
+							</th>
+							<th style="width: 10%">
+								Projected Pay Increase
+							</th>
+							<th style="width: 10%">
+								Actual Pay Increase
+							</th>
 
 						</tr>
-					}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td>
+									@Html.DisplayFor(model => item.EmployeeID)
+								</td>
+								<td>
+									@Html.DisplayFor(model => item.LastName), @Html.DisplayFor(model => item.FirstName) @Html.DisplayFor(model => item.MiddleInitial)
+								</td>
+								<td>
+									@Html.DisplayFor(model => item.ProjectedPositionName)
+								</td>
+								<td>
+									@Html.DisplayFor(model => item.ActualPositionName)
+								</td>
+								<td>
+									@Html.DisplayFor(model => item.PredictionRating)
+								</td>
+								<td>
+									@Html.DisplayFor(model => item.ActualRating)
+								</td>
+								<td>
+									@Html.DisplayFor(model => item.FormattedPredictionSalary)
+								</td>
+								<td>
+									$@Html.DisplayFor(model => item.FormattedActualSalaryIncrease)
+								</td>
+
+
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
+</div>
 
-
-</section>
-
-<script src="~/js/BudgetPirChart.js"></script>
 <script src="~/js/ProjectionsDoneChart.js"></script>
 <script src="~/js/ActualsDoneChart.js"></script>

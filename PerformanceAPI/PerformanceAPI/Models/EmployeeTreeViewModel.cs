@@ -16,6 +16,7 @@ namespace PerformanceAPI.Models
         public string EmployeeMiddleInitial { get; set; }
         public string EmployeeLastName { get; set; }
         public int SupervisorID { get; set; }
+        public bool ShowArrow { get; set; }
 
         //Gets the full name of the employee formated as LastName, FirstName MiddleInitial
         public string getFormatedEmpName()

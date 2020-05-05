@@ -311,16 +311,19 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					//instantiates a new model
-					PositionsModel positionModel = new PositionsModel();
-					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					positionModel.PositionID = Convert.ToInt32(dr["POSITION_ID"].ToString());
-					positionModel.PositionName = dr["POSITION_NAME"].ToString();
-					positionModel.SalaryLowerBound = Convert.ToDouble(dr["POSITION_SALARY_LOWER"].ToString()).ToString("N");
-					positionModel.SalaryUpperBound = Convert.ToDouble(dr["POSITION_SALARY_UPPER"].ToString()).ToString("N");
+					if (CurrentUserModel.ListOfSubordinatePositoin.Contains(Convert.ToInt32(dr["POSITION_ID"].ToString())))
+					{
+						//instantiates a new model
+						PositionsModel positionModel = new PositionsModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						positionModel.PositionID = Convert.ToInt32(dr["POSITION_ID"].ToString());
+						positionModel.PositionName = dr["POSITION_NAME"].ToString();
+						positionModel.SalaryLowerBound = Convert.ToDouble(dr["POSITION_SALARY_LOWER"].ToString()).ToString("N");
+						positionModel.SalaryUpperBound = Convert.ToDouble(dr["POSITION_SALARY_UPPER"].ToString()).ToString("N");
 
-					//adds the model with the records data in it to the list
-					positionList.Add(positionModel);
+						//adds the model with the records data in it to the list
+						positionList.Add(positionModel);
+					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -530,14 +533,18 @@ namespace PerformanceAPI.Gateway
 
 							indModel.DateOfProjection = "";
 							indModel.PredictionRating = "";
-							indModel.PredictionSalary = 0; ;
+							indModel.ProjectedPositionName = "";
+							indModel.PredictionSalary = 0;
+							indModel.FormattedPredictionSalary = indModel.PredictionSalary.ToString("P");
 						}
 						else
 						{
 							//IMPORTANT! the text after DR needs to match the column name in the data base exactly 
 							indModel.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
 							indModel.PredictionRating = dr["PR_PROJECTION"].ToString();
-							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString()) * 100;
+							indModel.ProjectedPositionName = dr["PROJECTED_POSITION"].ToString();
+							indModel.PredictionSalary = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+							indModel.FormattedPredictionSalary = indModel.PredictionSalary.ToString("P");
 						}
 
 						//if date of projecion does not equal to 2020
@@ -545,21 +552,24 @@ namespace PerformanceAPI.Gateway
 						{
 							indModel.DateOfActuals = "";
 							indModel.ActualRating = "";
-							indModel.ActualSalary = 0;
+							indModel.ActualPositionName = "";
+							indModel.ActualSalaryIncrease = 0;
+							indModel.FormattedActualSalaryIncrease = indModel.ActualSalaryIncrease.ToString("P");
 						}
 						else
 						{
 							//IMPORTANT! the text after DR needs to match the column name in the data base exactly
 							indModel.DateOfActuals = dr["DATE_OF_REVIEW"].ToString();
-							indModel.ActualRating = dr["PR_LAST_RATING"].ToString();
-							indModel.ActualSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString());
+							indModel.ActualRating = dr["P_RATING_ID"].ToString();
+							indModel.ActualPositionName = dr["PR_PROMOTED_POSITION"].ToString();
+							indModel.ActualSalaryIncrease = Convert.ToDouble(dr["PR_PERCENT_SALARY_INCREASE"].ToString());
+							indModel.FormattedActualSalaryIncrease = indModel.ActualSalaryIncrease.ToString("P");
 						}
 
 						indModel.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 						indModel.FirstName = dr["E_FIRST_NAME"].ToString();
 						indModel.MiddleInitial = dr["E_MIDDLE_INTIAL"].ToString();
 						indModel.LastName = dr["E_LAST_NAME"].ToString();
-						indModel.PositionName = dr["POSITION_NAME"].ToString();
 						indModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
 
 
@@ -633,6 +643,7 @@ namespace PerformanceAPI.Gateway
 				while (dr.Read())
 				{
 					CurrentUserModel.ListOfSubordinates.Add(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString()));
+					CurrentUserModel.ListOfSubordinatePositoin.Add(Convert.ToInt32(dr["POSITION_ID"].ToString()));
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -834,15 +845,18 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					//instantiates a new model
-					PositionsModel positionModel = new PositionsModel();
-					//IMPORTANT! the text after DR needs to match the column name in the data base exactly
-					positionModel.PositionName = dr["POSITION_NAME"].ToString();
-					positionModel.SalaryLowerBound = Convert.ToDouble(dr["POSITION_SALARY_LOWER"].ToString()).ToString("N");
-					positionModel.SalaryUpperBound = Convert.ToDouble(dr["POSITION_SALARY_UPPER"].ToString()).ToString("N");
+					if (CurrentUserModel.ListOfSubordinatePositoin.Contains(Convert.ToInt32(dr["POSITION_ID"].ToString())))
+					{
+						//instantiates a new model
+						PositionsModel positionModel = new PositionsModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						positionModel.PositionName = dr["POSITION_NAME"].ToString();
+						positionModel.SalaryLowerBound = Convert.ToDouble(dr["POSITION_SALARY_LOWER"].ToString()).ToString("N");
+						positionModel.SalaryUpperBound = Convert.ToDouble(dr["POSITION_SALARY_UPPER"].ToString()).ToString("N");
 
-					//adds the model with the records data in it to the list
-					positionList.Add(positionModel);
+						//adds the model with the records data in it to the list
+						positionList.Add(positionModel);
+					}
 				}
 				//IMPORTANT! dont forget to close the connection
 				con.Close();
@@ -914,8 +928,8 @@ namespace PerformanceAPI.Gateway
 				while (dr.Read())
 				{
 					PerformanceRatingListModel rating = new PerformanceRatingListModel(
-						dr["P_RATING_ID"].ToString(), dr["MG_LOWER_BOUND"].ToString(), dr["MG_TARGET"].ToString(),
-						dr["MG_UPPER_BOUND"].ToString());
+						dr["P_RATING_ID"].ToString(), (Convert.ToDouble(dr["MG_LOWER_BOUND"].ToString())).ToString("P"),
+						(Convert.ToDouble(dr["MG_TARGET"].ToString())).ToString("P"), (Convert.ToDouble(dr["MG_UPPER_BOUND"].ToString())).ToString("P"));
 					PerformanceRatingModel.listOfRatingInfo.Add(rating);
 				}
 				//IMPORTANT! dont forget to close the connection
