@@ -136,6 +136,8 @@ namespace PerformanceAPI.Controllers
         {
             List<EmployeeListProjectionsModel> empList = _db.GetEmployeesForProjections().ToList();
             ViewBag.EmployeeList = new SelectList(empList, "EmployeeID", "LastName");
+            ViewBag.PositionList = new SelectList(empList, "projectedPosition", "projectedPosition");
+            ViewBag.RatingList = new SelectList(empList, "projectedReview", "projectedReview");
 
             return View();
 

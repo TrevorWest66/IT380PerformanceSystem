@@ -15,22 +15,24 @@
 
 <div class="container" style="position: center">
     @using (Html.BeginForm("SaveProjection", "Home", FormMethod.Post))
-        
-    {
-    <span>Employee: </span>
-    @Html.DropDownListFor(model => model.EmployeeID, ViewBag.EmployeeList as SelectList, "-- Select Employee --", new { @class = "form-control", @required  = "required"})
-    <span>Projected Review Rating: </span>
-    @Html.TextBoxFor(model => model.projectedReview, new { @class = "form-control", @placeholder = "Rating", @required  = "required"} )
-    <span>Projected Increase (%): </span>
-    @Html.TextBoxFor(model => model.projectedSalaryIncrease, new { @class = "form-control", @placeholder = "i.e. 3.5, 0.5", @required  = "required"} )
-    <span>Projected Position: </span>
-    @Html.TextBoxFor(model => model.projectedPosition, new { @class = "form-control", @placeholder = "Position", @required  = "required" } )
-    <span>Comments: </span>
-    @Html.TextAreaFor(model => model.comments, new { @class = "form-control", @placeholder="500 character max"})
 
-    <input type="submit" value="Submit" class="btn btn-block btn-primary" onclick="javascript:return ShowMessage();" />
+    {
+        <span>Employee: </span>
+        @Html.DropDownListFor(model => model.EmployeeID, ViewBag.EmployeeList as SelectList, "-- Select Employee --", new { @class = "form-control", @required = "required" })
+        <span>Projected Review Rating: </span>
+        <!-- Html.TextBoxFor(model => model.projectedReview, new { class = "form-control", placeholder = "Rating", required = "required" })-->
+        @Html.DropDownListFor(model => model.projectedReview, ViewBag.RatingList as SelectList, "-- Select Rating --", new { @class = "form-control", @required = "required" })
+        <span>Projected Increase (%): </span>
+        @Html.TextBoxFor(model => model.projectedSalaryIncrease, new { @class = "form-control", @placeholder = "e.g. 3.5, 0.5", @required = "required" })
+        <span>Projected Position: </span>
+        <!--Html.TextBoxFor(model => model.projectedPosition, new { class = "form-control", placeholder = "Position", required = "required" })-->
+        @Html.DropDownListFor(model => model.projectedPosition, ViewBag.PositionList as SelectList, "-- Select Position --", new { @class = "form-control", @required = "required" })
+        <span>Comments: </span>
+        @Html.TextAreaFor(model => model.comments, new { @class = "form-control", @placeholder = "500 character max" })
+
+        <input type="submit" value="Submit" class="btn btn-block btn-primary" onclick="javascript:return ShowMessage();" />
     }
-    
+
 
 </div>
 

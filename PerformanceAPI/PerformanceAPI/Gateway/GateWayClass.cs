@@ -255,19 +255,13 @@ namespace PerformanceAPI.Gateway
 			//makes the connection
 			using (SqlConnection con = new SqlConnection(connectionString))
 			{
-				//makes the command for the stored procedure
-				//and sets its type
-				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
 				SqlCommand cmd = new SqlCommand("GetEmployeeDetailsForProjectionsPage", con)
 				{
 					CommandType = CommandType.StoredProcedure
 				};
 				cmd.Parameters.AddWithValue("@CurrentYear", DateTime.Now.ToString("yyyy"));
-				//opens the connection
 				con.Open();
-				//executes the stored procedure
 				SqlDataReader dr = cmd.ExecuteReader();
-				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
 					if (Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()).Equals(CurrentUserModel.CurrentEmployeeID)
@@ -282,7 +276,41 @@ namespace PerformanceAPI.Gateway
 						employeeProjectionsList.Add(employeeModel);
 					}
 				}
-				//IMPORTANT! dont forget to close the connection
+				dr.Close();
+				SqlCommand cmd1 = new SqlCommand("GetAllPositions", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				SqlDataReader dr1 = cmd1.ExecuteReader();
+				while (dr1.Read())
+				{
+					{
+						//instantiates a new model
+						EmployeeListProjectionsModel employeeModel = new EmployeeListProjectionsModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						employeeModel.projectedPosition = dr1["POSITION_NAME"].ToString();
+						employeeProjectionsList.Add(employeeModel);
+					}
+				}
+				dr1.Close();
+				SqlCommand cmd2 = new SqlCommand("GetPerformanceRatingInformation", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+				SqlDataReader dr2 = cmd2.ExecuteReader();
+				while (dr2.Read())
+				{
+					{
+						//instantiates a new model
+						EmployeeListProjectionsModel employeeModel = new EmployeeListProjectionsModel();
+						//IMPORTANT! the text after DR needs to match the column name in the data base exactly
+						employeeModel.projectedReview = dr2["P_RATING_ID"].ToString();
+						employeeProjectionsList.Add(employeeModel);
+					}
+				}
+				dr2.Close();
+
+
 				con.Close();
 			}
 			//returns the list of models
