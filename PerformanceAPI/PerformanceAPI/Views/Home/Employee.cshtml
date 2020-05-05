@@ -14,11 +14,13 @@
 
 @foreach (var item in Model)
 {
-    @if ((item.DateOfProjection.Contains(CurrentUserModel.CurrentYear)) && !(item.LastReviewDate.Contains(CurrentUserModel.CurrentYear)))
+    @if ((item.DateOfProjection.Contains(CurrentUserModel.CurrentYear)) && !(item.LastReviewDate.Contains(CurrentUserModel.CurrentYear)) 
+        && item.SupervisorID.Equals(CurrentUserModel.CurrentEmployeeID))
     {
-        <div class="maroon-link">
-            @Html.ActionLink("Start Performance Review", "PerformanceReview", new { id = item.EmployeeID })
-            <br />
+        <div class="text-center">
+            <div class="maroon-link">
+                @Html.ActionLink("Start Performance Review", "PerformanceReview", new { id = item.EmployeeID })
+            </div>
             <br />
         </div>
     }
@@ -82,17 +84,8 @@
                 <td>Projection Comments</td>
                 <td>@Html.DisplayFor(modelItem => item.ProjectionComments)</td>
             </tr>
-            @if((item.DateOfProjection.Contains(CurrentUserModel.CurrentYear)) && !(item.LastReviewDate.Contains(CurrentUserModel.CurrentYear))
-                && item.SupervisorID.Equals(CurrentUserModel.CurrentEmployeeID))
-            {
-                <tr>
-                    <td class="maroon-link">
-                        @Html.ActionLink("New Performance Review", "PerformanceReview", new { id = item.EmployeeID })
-                    </td>
-                </tr>
-            }
         </tbody>
-        
+
 
     </table>
 }

@@ -13,42 +13,51 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <h3>Edit Projection</h3>
             <div class="form-group">
-                <label asp-for="EmployeeID" class="control-label"></label>
+                <label asp-for="EmployeeID" class="control-label">Employee ID</label>
                 <input asp-for="EmployeeID" class="form-control" disabled />
                 <span asp-validation-for="EmployeeID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmployeeFirstName" class="control-label"></label>
+                <label asp-for="EmployeeFirstName" class="control-label">First Name</label>
                 <input asp-for="EmployeeFirstName" class="form-control" disabled />
                 <span asp-validation-for="EmployeeFirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="EmployeeLastName" class="control-label"></label>
+                <label asp-for="EmployeeLastName" class="control-label">Last Name</label>
                 <input asp-for="EmployeeLastName" class="form-control" disabled />
                 <span asp-validation-for="EmployeeLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateOfProjection" class="control-label"></label>
+                <label asp-for="DateOfProjection" class="control-label">Date Of Projection</label>
                 <input asp-for="DateOfProjection" class="form-control" />
                 <span asp-validation-for="DateOfProjection" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProjectedRating" class="control-label"></label>
-                <input asp-for="ProjectedRating" class="form-control" />
+                <label asp-for="ProjectedRating" class="control-label">Projected Rating</label>
+                <select asp-for="ProjectedRating" id="projected-rating" class="form-control">
+                    @foreach(var item in PerformanceRatingModel.listOfRatingInfo)
+					{
+                        <option class="rating-option" value="@item.RatingID">@item.RatingID</option>
+					}
+                </select>
                 <span asp-validation-for="ProjectedRating" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProjectedSalaryIncreaseString" class="control-label"></label>
-                <input asp-for="ProjectedSalaryIncreaseString" class="form-control" />
+                <label asp-for="ProjectedSalaryIncreaseString" class="control-label">Projected Salary Increase</label>
+                <select asp-for="ProjectedSalaryIncreaseString" id="pay-increase" class="form-control">
+                        <option value="0" id="pay-option-1"></option>
+                        <option value="0" id="pay-option-2"></option>
+                        <option value="0" id="pay-option-3"></option>
+                </select>
                 <span asp-validation-for="ProjectedSalaryIncreaseString" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProjectedPosition" class="control-label"></label>
+                <label asp-for="ProjectedPosition" class="control-label">Projected Position</label>
                 <input asp-for="ProjectedPosition" class="form-control" />
                 <span asp-validation-for="ProjectedPosition" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProjectionsComments" class="control-label"></label>
+                <label asp-for="ProjectionsComments" class="control-label">Comments</label>
                 <input asp-for="ProjectionsComments" class="form-control" />
                 <span asp-validation-for="ProjectionsComments" class="text-danger"></span>
             </div>
@@ -64,6 +73,7 @@
 
 
 <link rel="stylesheet" href="~/css/Projections.css" />
+<script src="~/js/PayIncreaseDropDown.js"></script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

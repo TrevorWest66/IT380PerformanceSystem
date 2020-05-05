@@ -776,7 +776,7 @@ namespace PerformanceAPI.Gateway
 					qsrModel.FirstName = dr["E_FIRST_NAME"].ToString();
 					qsrModel.LastName = dr["E_LAST_NAME"].ToString();
 					qsrModel.ReviewDate = dr["DATE_OF_REVIEW"].ToString();
-					qsrModel.Supervisor = dr["SUPERVISOR_ID"].ToString();
+					qsrModel.Supervisor = dr["PR_SUPERVISOR"].ToString();
 					qsrModel.ReviewPeriod = dr["PR_REVIEW_PERIOD"].ToString();
 					qsrModel.PerformanceRatingID = dr["PR_PROJECTION"].ToString();
 					qsrModel.PrLastRating = dr["PR_LAST_RATING"].ToString();

@@ -17,12 +17,14 @@ namespace PerformanceAPI.Models
 		public static List<int> ListOfSubordinatePositoin = new List<int>();
 		public static int NumberOfEmployees;
 
-		// Set in index page
+		// Set in reports pages
 		public static double OverBudgetAmount;
 		public static bool CurrentReportYear;
 		public static double CurrentBudgetUsed;
+		//set in index page
 		public static int NumberOfEmployeesWithProjections;
 		public static int NumberOfEmployeesWithActuals;
+		public static int NumberOfEmployeesWithCorrectProjections;
 
 		public static string GetFormattedOverBudgetAmount()
 		{

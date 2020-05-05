@@ -110,7 +110,7 @@ namespace PerformanceAPI.Controllers
 
         public IActionResult ActualsSummaryReport(int Year)
         {
-            if(Year == 2020)
+            if(Year == Convert.ToInt32(CurrentUserModel.CurrentYear))
             {
                 CurrentUserModel.CurrentReportYear = true;
             }
