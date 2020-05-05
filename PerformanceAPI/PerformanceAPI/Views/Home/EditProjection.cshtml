@@ -33,13 +33,25 @@
             </div>
             <div class="form-group">
                 <label asp-for="ProjectedRating" class="control-label"></label>
-                <input asp-for="ProjectedRating" class="form-control" />
+                <select asp-for="ProjectedRating" name="ProjectedRating">
+                    @foreach(var item in PerformanceRatingModel.listOfRatingInfo)
+					{
+                        <option value="@item.RatingID">@item.RatingID</option>
+					}
+                </select>
                 <span asp-validation-for="ProjectedRating" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ProjectedSalaryIncrease" class="control-label"></label>
-                <input asp-for="ProjectedSalaryIncrease" class="form-control" />
-                <span asp-validation-for="ProjectedSalaryIncrease" class="text-danger"></span>
+                <label asp-for="ProjectedSalaryIncreaseString" class="control-label"></label>
+                <select asp-for="ProjectedSalaryIncreaseString" name="ProjectedSalaryIncreaseString">
+                    @foreach (var item in PerformanceRatingModel.listOfRatingInfo)
+                    {
+                        <option value="@item.LowerBound">@item.LowerBound</option>
+                        <option value="@item.Target">@item.Target</option>
+                        <option value="@item.UpperBound">@item.UpperBound</option>
+                    }
+                </select>
+                <span asp-validation-for="ProjectedSalaryIncreaseString" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ProjectedPosition" class="control-label"></label>

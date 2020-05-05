@@ -11,6 +11,7 @@ namespace PerformanceAPI.Models
         // used for submitting the projections
         public string ProjectedRating { get; set; }
         public double ProjectedSalaryIncrease { get; set; }
+        public string ProjectedSalaryIncreaseString { get; set; }
         public string ProjectedPosition { get; set; }
         public string ProjectionsComments { get; set; }
         public string EmployeeFirstName { get; set; }

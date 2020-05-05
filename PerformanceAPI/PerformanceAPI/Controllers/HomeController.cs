@@ -46,6 +46,7 @@ namespace PerformanceAPI.Controllers
                 if (ModelState.IsValid) {
                     CurrentUserModel.CurrentEmployeeID = Convert.ToInt32(user.UserID);
 
+                    _db.GetPerformanceRatingInfo();
                     _db.GetPositionIdForCurrentUser();
                     _db.GetBudgetForCurrentUser();
                     _db.GetSubordinatesForCurrentUser();
@@ -193,7 +194,7 @@ namespace PerformanceAPI.Controllers
 
                 projection.EmployeeID = model.EmployeeID;
                 projection.ProjectedPosition = model.projectedPosition;
-                projection.ProjectedSalaryIncrease = (Convert.ToDouble(model.projectedSalaryIncrease) / 100);
+                projection.ProjectedSalaryIncrease = (Convert.ToDouble(model.projectedSalaryIncrease.TrimEnd('%')) / 100);
                 projection.ProjectedRating = model.projectedReview;
 
                 _db.AddProjectionsDataToProjectionsTable(projection);
@@ -207,19 +208,19 @@ namespace PerformanceAPI.Controllers
 
             public IActionResult EditProjection(int id)
             {
+                if (id == 0)
                 {
-                    if (id == 0)
-                    {
-                        return NotFound();
-                    }
-
-                    ProjectionsModel projection = _db.GetMostRecentProjectionForAnEmployee(id);
-                    if (projection == null)
-                    {
-                        return NotFound();
-                    }
-                    return View(projection);
+                    return NotFound();
                 }
+
+                ProjectionsModel projection = _db.GetMostRecentProjectionForAnEmployee(id);
+                projection.ProjectedSalaryIncreaseString = projection.ProjectedSalaryIncrease.ToString("P");
+                
+                if (projection == null)
+                {
+                    return NotFound();
+                }
+                return View(projection);
             }
 
         [HttpPost]
@@ -240,6 +241,8 @@ namespace PerformanceAPI.Controllers
                     {
                         projection.ProjectionsComments = "--";
                     }
+
+                    projection.ProjectedSalaryIncrease = Convert.ToDouble(projection.ProjectedSalaryIncreaseString.TrimEnd('%')) / 100;
                     _db.UpdateProjectionByID(projection);
                     return RedirectToAction("PredictionSummaryReport", new { Year = Convert.ToInt32(CurrentUserModel.CurrentYear)});
                 }
@@ -256,7 +259,8 @@ namespace PerformanceAPI.Controllers
             {
                 PerformanceReviewModel prModel = _db.GetDataForPerformanceReviewPage(id);
                 prModel.ReviewDate = DateTime.Now.ToString();
-                prModel.ReviewPeriod = "01-01-" + CurrentUserModel.CurrentYear + "-01-01-" + CurrentUserModel.CurrentYear;
+                prModel.ReviewPeriod = "01-01-" + CurrentUserModel.CurrentYear + "-12-31-" + CurrentUserModel.CurrentYear;
+                prModel.PayIncreaseString = prModel.PayIncreaseNumber.ToString("P");
                 return View(prModel);
             }
         }
@@ -279,6 +283,11 @@ namespace PerformanceAPI.Controllers
                     {
                         prReview.PrLastRating = "--";
                     }
+                    if (prReview.Comments is null)
+                    {
+                        prReview.Comments = "--";
+                    }
+                    prReview.PayIncreaseNumber = (Convert.ToDouble(prReview.PayIncreaseString.TrimEnd('%')) / 100);
                     _db.InsertPerformanceReview(prReview);
                     return RedirectToAction("Index");
                 }

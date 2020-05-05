@@ -142,6 +142,7 @@ namespace PerformanceAPI.Gateway
 					employeeDetailModel.CurrentSalary = Convert.ToDouble(dr["PAY_AMOUNT"].ToString()).ToString("N");
 					employeeDetailModel.SalaryFlag = salaryFlagToString(Convert.ToBoolean(dr["SALARY_FLAG"]));
 					employeeDetailModel.HireDate = dr["HIRE_DATE"].ToString().Split(" ")[0];
+					employeeDetailModel.SupervisorID = Convert.ToInt32(dr["SUPERVISOR_ID"].ToString());
 					employeeDetailModel.SupervisorFirstName = dr["SUPERVISOR_FIRST_NAME"].ToString();
 					employeeDetailModel.SupervisorLastName = dr["SUPERVISOR_LAST_NAME"].ToString();
 					employeeDetailModel.LastReviewDate = nullReviewDate(dr["LAST_REVIEW_DATE"].ToString());
@@ -225,7 +226,7 @@ namespace PerformanceAPI.Gateway
 				return "-----";
 			}
 			double increaseint = Convert.ToDouble(increase);
-			return ((increaseint * 100).ToString() + "%");
+			return ((increaseint).ToString("P"));
 		}
 
 		/**
@@ -269,7 +270,8 @@ namespace PerformanceAPI.Gateway
 				//creates the model objexts for each row and adds them to the list
 				while (dr.Read())
 				{
-					if (CurrentUserModel.ListOfSubordinates.Contains(Convert.ToInt32(dr["EMPLOYEE_ID"].ToString())))
+					if (Convert.ToInt32(dr["SUPERVISOR_ID"].ToString()).Equals(CurrentUserModel.CurrentEmployeeID)
+						&& !dr["DATE_OF_PROJECTION"].ToString().Contains(CurrentUserModel.CurrentYear))
 					{
 						//instantiates a new model
 						EmployeeListProjectionsModel employeeModel = new EmployeeListProjectionsModel();
@@ -694,7 +696,7 @@ namespace PerformanceAPI.Gateway
 					projection.EmployeeID = Convert.ToInt32(dr["EMPLOYEE_ID"].ToString());
 					projection.DateOfProjection = dr["DATE_OF_PROJECTION"].ToString();
 					projection.ProjectedRating = dr["PR_PROJECTION"].ToString();
-					projection.ProjectedSalaryIncrease =  1 + Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
+					projection.ProjectedSalaryIncrease =  Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
 					projection.ProjectedPosition = dr["PROJECTED_POSITION"].ToString();
 					projection.ProjectionsComments = dr["COMMMENTS"].ToString();
 					projection.EmployeeFirstName = dr["E_FIRST_NAME"].ToString();
@@ -724,7 +726,7 @@ namespace PerformanceAPI.Gateway
 				cmd.Parameters.AddWithValue("@EmployeeID", projection.EmployeeID);
 				cmd.Parameters.AddWithValue("@DateOfProjections", projection.DateOfProjection);
 				cmd.Parameters.AddWithValue("@PrProjection", projection.ProjectedRating);
-				cmd.Parameters.AddWithValue("@SalaryIncrease", (projection.ProjectedSalaryIncrease - 1));
+				cmd.Parameters.AddWithValue("@SalaryIncrease", (projection.ProjectedSalaryIncrease));
 				cmd.Parameters.AddWithValue("@ProjectedPosition", projection.ProjectedPosition);
 				cmd.Parameters.AddWithValue("@Comments", projection.ProjectionsComments);
 				//opens the connection
@@ -771,8 +773,7 @@ namespace PerformanceAPI.Gateway
 					qsrModel.Department = dr["PR_DEPARTMENT"].ToString();
 					qsrModel.DateOfNextReview = dr["PR_DATE_OF_NEXT_REVIEW"].ToString();
 					qsrModel.Promotion = dr["PROJECTED_POSITION"].ToString();
-					qsrModel.PayIncrease = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
-					qsrModel.Comments = dr["PR_COMMENTS"].ToString();
+					qsrModel.PayIncreaseNumber = Convert.ToDouble(dr["SALARY_INCREASE_PROJECTION"].ToString());
 					
 				}
 				//IMPORTANT! dont forget to close the connection
@@ -801,7 +802,7 @@ namespace PerformanceAPI.Gateway
 				cmd.Parameters.AddWithValue("@PrDepartment", performanceReview.Department);
 				cmd.Parameters.AddWithValue("@DateOfNextReview", performanceReview.DateOfNextReview);
 				cmd.Parameters.AddWithValue("@PrPromotedPosition", performanceReview.Promotion);
-				cmd.Parameters.AddWithValue("@PrSalaryIncrease", performanceReview.PayIncrease);
+				cmd.Parameters.AddWithValue("@PrSalaryIncrease", performanceReview.PayIncreaseNumber);
 				cmd.Parameters.AddWithValue("@Comments", performanceReview.Comments);
 
 				con.Open();
@@ -889,6 +890,37 @@ namespace PerformanceAPI.Gateway
 			//returns the list of models
 			return targetList;
 			;
+		}
+
+		public void GetPerformanceRatingInfo()
+		{
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				//makes the command for the stored procedure
+				//and sets its type
+				// IMPORTANT! the string neeeds to match the name of the stored procedure exactly
+				SqlCommand cmd = new SqlCommand("GetPerformanceRatingInformation", con)
+				{
+					CommandType = CommandType.StoredProcedure
+				};
+
+				//opens the connection
+				con.Open();
+				//executes the stored procedure
+				SqlDataReader dr = cmd.ExecuteReader();
+				//creates the model objexts for each row and adds them to the list
+				while (dr.Read())
+				{
+					PerformanceRatingListModel rating = new PerformanceRatingListModel(
+						dr["P_RATING_ID"].ToString(), dr["MG_LOWER_BOUND"].ToString(), dr["MG_TARGET"].ToString(),
+						dr["MG_UPPER_BOUND"].ToString());
+					PerformanceRatingModel.listOfRatingInfo.Add(rating);
+				}
+				//IMPORTANT! dont forget to close the connection
+				con.Close();
+			}
 		}
 
 		//next method for a stored procedure goes here

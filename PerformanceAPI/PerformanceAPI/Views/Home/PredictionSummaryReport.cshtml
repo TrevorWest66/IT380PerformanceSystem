@@ -101,7 +101,8 @@ else
             @foreach (var item in Model)
             {
             <tr>
-                @if (item.DateOfProjection.Contains(CurrentUserModel.CurrentYear))
+                @if (item.DateOfProjection.Contains(CurrentUserModel.CurrentYear)
+                    && item.Supervisor.Equals(CurrentUserModel.CurrentEmployeeID))
                 {
                     <td class="maroon-link">
                         @Html.ActionLink(item.EmployeeID + "", "EditProjection", new { id = item.EmployeeID })

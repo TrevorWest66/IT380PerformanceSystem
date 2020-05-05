@@ -17,6 +17,7 @@ namespace PerformanceAPI.Models
 		public string CurrentSalary { get; set; }
 		public string SalaryFlag { get; set; }
 		public string HireDate { get; set; }
+		public int SupervisorID { get; set; }
 		public string SupervisorFirstName { get; set; }
 		public string SupervisorLastName { get; set; }
 		public string LastReviewDate { get; set; }
