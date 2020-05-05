@@ -179,9 +179,9 @@ namespace PerformanceAPI.Controllers
 
         public ActionResult SaveProjection(EmployeeListProjectionsModel model)
         {
-
-            try
+            if (ModelState.IsValid)
             {
+
                 ProjectionsModel projection = new ProjectionsModel();
                 if (String.IsNullOrEmpty(model.comments))
                 {
@@ -200,10 +200,11 @@ namespace PerformanceAPI.Controllers
                 _db.AddProjectionsDataToProjectionsTable(projection);
                 return RedirectToAction("Projections");
             }
-            catch (Exception e)
+            else
             {
                 return RedirectToAction("Projections");
             }
+
         }
 
             public IActionResult EditProjection(int id)

@@ -114,8 +114,14 @@ ul, #myUL {
 	color : white;
 }
 
-img {
+.federatedImage {
 	width: 155px;
+}
+
+.logoutImage {
+	width: 30px;
+	height: 30px;
+	align-self: end;
 }
 
 .maroon-link a{

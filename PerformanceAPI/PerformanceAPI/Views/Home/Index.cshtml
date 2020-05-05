@@ -124,33 +124,27 @@
 
 
 		<div class="tableDiv">
-			<table class=" table table-bordered table-striped">
+			<table class=" table table-bordered table-striped" style="width: 1000px">
 				<thead class=" thead-dark">
 					<!--<td colspan="9" scope="colgroup">Predictions not actualized</td> -->
 					<tr>
-						<th>
-							@Html.DisplayNameFor(model => model.FirstName)
+						<th style="width: 25%">
+							Name
 						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.MiddleInitial)
+						<th style="width: 25%">
+							Position
 						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.LastName)
+						<th style="width: 10%">
+							Projected Rating
 						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.PositionName)
+						<th style="width: 10%">
+							Actual Rating
 						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.PredictionRating)
+						<th style="width: 15%">
+							Projected Pay Increase 
 						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.ActualRating)
-						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.PredictionSalary)
-						</th>
-						<th>
-							@Html.DisplayNameFor(model => model.ActualSalary)
+						<th style="width: 15%">
+							Projected Salary
 						</th>
 
 					</tr>
@@ -160,13 +154,7 @@
 					{
 						<tr>
 							<td>
-								@Html.DisplayFor(model => item.FirstName)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.MiddleInitial)
-							</td>
-							<td>
-								@Html.DisplayFor(model => item.LastName)
+								@Html.DisplayFor(model => item.LastName), @Html.DisplayFor(model => item.FirstName) @Html.DisplayFor(model => item.MiddleInitial)
 							</td>
 							<td>
 								@Html.DisplayFor(model => item.PositionName)
@@ -178,10 +166,10 @@
 								@Html.DisplayFor(model => item.ActualRating)
 							</td>
 							<td>
-								@Html.DisplayFor(model => item.PredictionSalary)
+								@Html.DisplayFor(model => item.PredictionSalary)%
 							</td>
 							<td>
-								@Html.DisplayFor(model => item.ActualSalary)
+								$@Html.DisplayFor(model => item.ActualSalary)
 							</td>
 
 
