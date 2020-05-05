@@ -277,6 +277,23 @@ namespace PerformanceAPI.Gateway
 					}
 				}
 				dr.Close();
+
+
+				con.Close();
+			}
+			//returns the list of models
+			return employeeProjectionsList;
+		}
+
+		public IEnumerable<EmployeeListProjectionsModel> GetEmployeesForProjections1()
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<EmployeeListProjectionsModel> employeeProjectionsList = new List<EmployeeListProjectionsModel>();
+
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				con.Open();
 				SqlCommand cmd1 = new SqlCommand("GetAllPositions", con)
 				{
 					CommandType = CommandType.StoredProcedure
@@ -292,7 +309,23 @@ namespace PerformanceAPI.Gateway
 						employeeProjectionsList.Add(employeeModel);
 					}
 				}
-				dr1.Close();
+
+
+				con.Close();
+			}
+			//returns the list of models
+			return employeeProjectionsList;
+		}
+
+		public IEnumerable<EmployeeListProjectionsModel> GetEmployeesForProjections2()
+		{
+			// makes a list to store each record from the database which are loaded into the model
+			List<EmployeeListProjectionsModel> employeeProjectionsList = new List<EmployeeListProjectionsModel>();
+			
+			//makes the connection
+			using (SqlConnection con = new SqlConnection(connectionString))
+			{
+				con.Open();
 				SqlCommand cmd2 = new SqlCommand("GetPerformanceRatingInformation", con)
 				{
 					CommandType = CommandType.StoredProcedure

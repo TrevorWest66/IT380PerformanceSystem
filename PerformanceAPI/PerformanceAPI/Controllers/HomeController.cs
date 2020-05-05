@@ -135,9 +135,12 @@ namespace PerformanceAPI.Controllers
         public IActionResult Projections()
         {
             List<EmployeeListProjectionsModel> empList = _db.GetEmployeesForProjections().ToList();
+            List<EmployeeListProjectionsModel> posList = _db.GetEmployeesForProjections1().ToList();
+            List<EmployeeListProjectionsModel> rateList = _db.GetEmployeesForProjections2().ToList();
+
             ViewBag.EmployeeList = new SelectList(empList, "EmployeeID", "LastName");
-            ViewBag.PositionList = new SelectList(empList, "projectedPosition", "projectedPosition");
-            ViewBag.RatingList = new SelectList(empList, "projectedReview", "projectedReview");
+            ViewBag.PositionList = new SelectList(posList, "projectedPosition", "projectedPosition");
+            ViewBag.RatingList = new SelectList(rateList, "projectedReview", "projectedReview");
 
             return View();
 
